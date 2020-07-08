@@ -14,6 +14,9 @@ public class CorpusclesVisualizerTest {
         sim.activate(4,5);
         sim.activate(3,5);
         sim.activate(1,5);
+        sim.activate(1,3);
+        sim.activate(1,0);
+        sim.activate(2,4);
         sim.nextEpoch();
 
         CorpusclesVisualizer visualizer = new CorpusclesVisualizer(sim);

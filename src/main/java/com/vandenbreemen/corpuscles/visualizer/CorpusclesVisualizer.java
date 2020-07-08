@@ -39,7 +39,35 @@ public class CorpusclesVisualizer extends JFrame  {
                 performAutomataStuff();
             }
         });
+
+        JButton next10 = new JButton("Next 10 Iterations");
+        next10.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        if(Thread.currentThread().equals(this)) {
+                            int numIteration = 10;
+                            try {
+                                for (int i = 0; i < numIteration; i++) {
+                                    performAutomataStuff();
+                                    sleep(100);
+                                }
+                            }
+                            catch(Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+                }.start();
+
+            }
+        });
+
+
         buttons.add(button);
+        buttons.add(next10);
 
         getContentPane().add("North", buttons);
     }

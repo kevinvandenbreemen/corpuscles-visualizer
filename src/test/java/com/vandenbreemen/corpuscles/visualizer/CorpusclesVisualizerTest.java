@@ -1,8 +1,11 @@
 package com.vandenbreemen.corpuscles.visualizer;
 
 
+import com.vandenbreemen.corpuscles.CellularAutomaton;
+import com.vandenbreemen.corpuscles.Corpuscle;
 import com.vandenbreemen.corpuscles.CorpusclesData;
 import com.vandenbreemen.corpuscles.Simulation;
+import com.vandenbreemen.corpuscles.corpuscle.ConwayCell;
 
 public class CorpusclesVisualizerTest {
 
@@ -19,7 +22,15 @@ public class CorpusclesVisualizerTest {
         sim.activate(2,4);
         sim.nextEpoch();
 
-        CorpusclesVisualizer visualizer = new CorpusclesVisualizer(sim);
+        final ConwayCell conwayCell = new ConwayCell(sim);
+        CellularAutomaton automaton = new CellularAutomaton(sim) {
+
+            @Override
+            protected Corpuscle getCorpuscle(int alongWidth, int alongHeight, Simulation simulation) {
+                return conwayCell;
+            }
+        };
+        CorpusclesVisualizer visualizer = new CorpusclesVisualizer(sim, automaton);
     }
 
 }

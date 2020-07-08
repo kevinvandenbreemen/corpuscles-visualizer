@@ -1,5 +1,6 @@
 package com.vandenbreemen.corpuscles.visualizer;
 
+import com.vandenbreemen.corpuscles.CellularAutomaton;
 import com.vandenbreemen.corpuscles.Simulation;
 import com.vandenbreemen.corpuscles.corpuscle.ConwayCell;
 
@@ -11,11 +12,18 @@ import java.awt.event.ActionListener;
 public class CorpusclesVisualizer extends JFrame  {
 
     private Simulation simulation;
+
+    /**
+     * The object responsible for doing the actual data processing
+     */
+    private CellularAutomaton automaton;
     private GridCanvas canvas;
 
-    public CorpusclesVisualizer(Simulation simulation) {
+    public CorpusclesVisualizer(Simulation simulation, CellularAutomaton automaton) {
         super("CORPUSCLES VISUALIZER");
         this.simulation = simulation;
+        this.automaton = automaton;
+
         setBounds(20,20, 800,700);
 
         setLayout(new BorderLayout());
@@ -73,14 +81,7 @@ public class CorpusclesVisualizer extends JFrame  {
     }
 
     private void performAutomataStuff() {
-        ConwayCell cell = new ConwayCell(simulation);
-        for(int h=0; h<simulation.height(); h++) {
-            for(int w=0; w<simulation.width(); w++) {
-                cell.takeTurn(h, w);
-            }
-        }
-        simulation.nextEpoch();
-
+        automaton.performNextEpoch();
         canvas.repaint();
     }
 

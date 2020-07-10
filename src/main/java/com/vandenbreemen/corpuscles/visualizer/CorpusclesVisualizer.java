@@ -24,7 +24,7 @@ public class CorpusclesVisualizer extends JFrame  {
     private CellularAutomaton automaton;
     private GridCanvas canvas;
 
-    public CorpusclesVisualizer(Simulation simulation, CellularAutomaton automaton) {
+    public CorpusclesVisualizer(Simulation simulation, CellularAutomaton automaton, CellRenderer renderer) {
         super("CORPUSCLES VISUALIZER");
         this.simulation = simulation;
         this.automaton = automaton;
@@ -34,7 +34,11 @@ public class CorpusclesVisualizer extends JFrame  {
         setLayout(new BorderLayout());
         drawButtons();
 
-        canvas = new GridCanvas(800, 600, simulation, new CellRenderer());
+        CellRenderer theRenderer = renderer;
+        if(theRenderer == null) {
+            theRenderer = new CellRenderer();
+        }
+        canvas = new GridCanvas(800, 600, simulation, theRenderer);
         add("Center", canvas);
 
         setVisible(true);

@@ -96,6 +96,8 @@ public class CellTypeSensitiveCell extends Corpuscle {
             int numRequiredForActivation = 9;   //  Too many so not satisfied
             if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.InhibitorTypes.TwoCells.position)) {
                 numRequiredForActivation = 2;
+            } else if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.InhibitorTypes.FourCells.position)) {
+                numRequiredForActivation = 4;
             }
 
             int numActivated = 0;

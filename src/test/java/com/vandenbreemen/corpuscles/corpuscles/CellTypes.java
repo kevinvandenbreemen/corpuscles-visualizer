@@ -37,6 +37,7 @@ public class CellTypes {
     public enum InhibitorTypes {
 
         TwoCells(7),
+        FourCells(6),
 
         ;
 

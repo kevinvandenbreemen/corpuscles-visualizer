@@ -142,6 +142,31 @@ public class CellTypeSensitiveCellTest {
     }
 
     @Test
+    public void testInhibitoryActivatesIfSufficientCellsNearbyActivated_FourCells() {
+        //  Set up inhibitory cell
+        cellTypes.setBit(1,2, CellTypes.INHIBITOR, true);
+        cellTypes.setBit(1,2, CellTypes.InhibitorTypes.FourCells.position, true);
+
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(cells, cellTypes);
+        CellTypeSensitiveCell cell = new CellTypeSensitiveCell(simulation);
+
+        //  Turn on the inhibitor and an adjacent cell
+        simulation.activate(1,1);
+        simulation.activate(2,2);
+        simulation.activate(1,3);
+        simulation.activate(2,3);
+
+        simulation.nextEpoch();
+
+        //  Turn on the inhibitor since two cells beside it are on
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        //  Inhibitor should be on
+        assertTrue(simulation.activated(1,2));
+    }
+
+    @Test
     public void testInhibitoryDeactivatesIfInsufficientCellsNearbyActivated() {
         //  Set up inhibitory cell
         cellTypes.setBit(1,2, CellTypes.INHIBITOR, true);

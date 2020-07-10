@@ -7,6 +7,11 @@ public class CellTypes {
      */
     public static final int COUPLER = 0;
 
+    /**
+     * Cell that receives activation from a coupler cell when that coupler is on
+     */
+    public static final int COUPLER_ENDPOINT = 1;
+
     private CellTypes(){}
 
     public enum CouplerTypes {

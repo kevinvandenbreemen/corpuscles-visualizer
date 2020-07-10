@@ -17,9 +17,9 @@ public class CellTypes {
 
     public enum CouplerTypes {
 
-        HORIZONTAL(1),
-        VERTICAL(2),
-        FWD_SLASH(3)
+        HORIZONTAL(4),
+        VERTICAL(5),
+        FWD_SLASH(6)
         ;
 
         public final int position;
@@ -29,15 +29,15 @@ public class CellTypes {
         }
 
         public static class CouplerActivations {
-            public static final int FIRST_3 = 4;
+            public static final int FIRST_3 = 7;
         }
 
     }
 
     public enum InhibitorTypes {
 
-        TwoCells(7),
-        FourCells(6),
+        TwoCells(4),
+        FourCells(5),
 
         ;
 

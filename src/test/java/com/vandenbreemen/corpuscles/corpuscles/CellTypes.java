@@ -1,5 +1,14 @@
 package com.vandenbreemen.corpuscles.corpuscles;
 
+/*
+RESERVED BITS:
+0-2 (first 3 bits) -- Cell Types
+3-7 -- Configurations for individual cell types
+ */
+
+/**
+ * Bit positions for configuring cell types.
+ */
 public class CellTypes {
 
     /**
@@ -17,9 +26,9 @@ public class CellTypes {
 
     public enum CouplerTypes {
 
-        HORIZONTAL(4),
-        VERTICAL(5),
-        FWD_SLASH(6)
+        HORIZONTAL(3),
+        VERTICAL(4),
+        FWD_SLASH(5)
         ;
 
         public final int position;
@@ -29,15 +38,15 @@ public class CellTypes {
         }
 
         public static class CouplerActivations {
-            public static final int FIRST_3 = 7;
+            public static final int FIRST_3 = 6;
         }
 
     }
 
     public enum InhibitorTypes {
 
-        TwoCells(4),
-        FourCells(5),
+        TwoCells(3),
+        FourCells(4),
 
         ;
 

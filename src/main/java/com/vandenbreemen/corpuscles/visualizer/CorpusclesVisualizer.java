@@ -8,8 +8,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.lang.Thread.sleep;
 
 public class CorpusclesVisualizer extends JFrame  {
+
+    private static final long DELAY = 10;
 
     private Simulation simulation;
 
@@ -29,7 +34,7 @@ public class CorpusclesVisualizer extends JFrame  {
         setLayout(new BorderLayout());
         drawButtons();
 
-        canvas = new GridCanvas(800, 600, simulation);
+        canvas = new GridCanvas(800, 600, simulation, new CellRenderer());
         add("Center", canvas);
 
         setVisible(true);
@@ -39,6 +44,8 @@ public class CorpusclesVisualizer extends JFrame  {
     private void drawButtons() {
         JPanel buttons = new JPanel();
         buttons.setLayout(new FlowLayout());
+
+        AtomicBoolean runForever = new AtomicBoolean(false);
 
         JButton button = new JButton("NEXT ITERATION");
         button.addActionListener(new ActionListener() {
@@ -60,7 +67,7 @@ public class CorpusclesVisualizer extends JFrame  {
                             try {
                                 for (int i = 0; i < numIteration; i++) {
                                     performAutomataStuff();
-                                    sleep(100);
+                                    sleep(DELAY);
                                 }
                             }
                             catch(Exception ex) {
@@ -73,9 +80,50 @@ public class CorpusclesVisualizer extends JFrame  {
             }
         });
 
+        JButton runForeverBtn = new JButton("Run Forever");
+
+
+        JButton stop = new JButton("Stop");
+        stop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runForever.set(false);
+                stop.setEnabled(false);
+            }
+        });
+        stop.setEnabled(false);
+
+        runForeverBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        if(Thread.currentThread().equals(this)) {
+                            stop.setEnabled(true);
+                            runForever.set(true);
+                            try {
+                                while(runForever.get()) {
+                                    performAutomataStuff();
+                                    sleep(DELAY);
+                                }
+                            }
+                            catch(Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+                }.start();
+
+
+            }
+        });
 
         buttons.add(button);
         buttons.add(next10);
+        buttons.add(runForeverBtn);
+        buttons.add(stop);
 
         getContentPane().add("North", buttons);
     }

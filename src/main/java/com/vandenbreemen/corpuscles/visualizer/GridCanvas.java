@@ -41,14 +41,17 @@ import java.awt.*;
  */
 public class GridCanvas extends JPanel {
 
+    private CellRenderer renderer;
+
     private Simulation simulation;
     private Image offScreenImageDrawed = null;
     private Graphics offScreenGraphicsDrawed = null;
 
-    public GridCanvas(int width, int height, Simulation simulation) {
+    public GridCanvas(int width, int height, Simulation simulation, CellRenderer renderer) {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.white);
         this.simulation = simulation;
+        this.renderer = renderer;
     }
 
     @Override
@@ -92,13 +95,7 @@ public class GridCanvas extends JPanel {
                 int y = h*hSize;
                 int x = w*wSize;
 
-                if(simulation.activated(h, w)) {
-                    g.setColor(Color.green);
-                } else {
-                    g.setColor(Color.BLACK);
-                }
-
-                g.fillRect(x, y, wSize, hSize);
+                renderer.drawCell(g, wSize, hSize, simulation, h, w, y, x);
             }
         }
 

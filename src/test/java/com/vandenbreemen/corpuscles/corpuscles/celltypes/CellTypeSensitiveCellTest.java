@@ -208,4 +208,40 @@ public class CellTypeSensitiveCellTest {
         assertFalse(simulation.activated(1,1));
     }
 
+    @Test
+    public void testPulsingCellActivatesOnFirstTurn() {
+        //  Set up pulsing cell
+        cellTypes.setBit(1,2,CellTypes.COUPLER_ENDPOINT, true);
+        cellTypes.setBit(1,2,CellTypes.COUPLER, true);
+
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(cells, cellTypes);
+        CellTypeSensitiveCell cell = new CellTypeSensitiveCell(simulation);
+
+        simulation.nextEpoch();
+
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertTrue(simulation.activated(1,2));
+    }
+
+    @Test
+    public void testPulsingCellTurnsOffAfterActivated() {
+        //  Set up pulsing cell
+        cellTypes.setBit(1,2,CellTypes.COUPLER_ENDPOINT, true);
+        cellTypes.setBit(1,2,CellTypes.COUPLER, true);
+
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(cells, cellTypes);
+        CellTypeSensitiveCell cell = new CellTypeSensitiveCell(simulation);
+
+        simulation.nextEpoch();
+
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertFalse(simulation.activated(1,2));
+    }
+
 }

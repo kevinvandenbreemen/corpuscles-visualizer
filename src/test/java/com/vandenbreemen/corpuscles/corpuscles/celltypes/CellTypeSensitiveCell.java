@@ -117,6 +117,12 @@ public class CellTypeSensitiveCell extends Corpuscle {
             } else {
                 simulation.deactivate(alongHeight, alongWidth);
             }
+        } else if (isCouplingCell && isCouplingEndpoint) {  //  Pulsing cell
+            if(!simulation.activated(alongHeight, alongWidth)) {
+                simulation.activate(alongHeight, alongWidth);
+            } else {
+                simulation.deactivate(alongHeight, alongWidth);
+            }
         }
         else if(isCouplingCell) {
 

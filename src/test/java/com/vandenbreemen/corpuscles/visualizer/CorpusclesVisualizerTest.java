@@ -39,7 +39,7 @@ public class CorpusclesVisualizerTest {
                 return conwayCell;
             }
         };
-        CorpusclesVisualizer visualizer = new CorpusclesVisualizer(sim, automaton);
+        CorpusclesVisualizer visualizer = new CorpusclesVisualizer(sim, automaton, null);
     }
 
 }

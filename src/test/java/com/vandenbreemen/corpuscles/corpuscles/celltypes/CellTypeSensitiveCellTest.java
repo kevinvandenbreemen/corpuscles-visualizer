@@ -119,4 +119,68 @@ public class CellTypeSensitiveCellTest {
 
     }
 
+    @Test
+    public void testInhibitoryActivatesIfSufficientCellsNearbyActivated() {
+        //  Set up inhibitory cell
+        cellTypes.setBit(1,2, CellTypes.INHIBITOR, true);
+        cellTypes.setBit(1,2, CellTypes.InhibitorTypes.TwoCells.position, true);
+
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(cells, cellTypes);
+        CellTypeSensitiveCell cell = new CellTypeSensitiveCell(simulation);
+
+        //  Turn on the inhibitor and an adjacent cell
+        simulation.activate(1,1);
+        simulation.activate(2,2);
+        simulation.nextEpoch();
+
+        //  Turn on the inhibitor since two cells beside it are on
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        //  Inhibitor should be on
+        assertTrue(simulation.activated(1,2));
+    }
+
+    @Test
+    public void testInhibitoryDeactivatesIfInsufficientCellsNearbyActivated() {
+        //  Set up inhibitory cell
+        cellTypes.setBit(1,2, CellTypes.INHIBITOR, true);
+        cellTypes.setBit(1,2, CellTypes.InhibitorTypes.TwoCells.position, true);
+
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(cells, cellTypes);
+        CellTypeSensitiveCell cell = new CellTypeSensitiveCell(simulation);
+
+        //  Turn on the inhibitor and an adjacent cell
+        simulation.activate(1,2);
+        simulation.activate(1,1);
+        simulation.nextEpoch();
+
+        //  Turn on the inhibitor since two cells beside it are on
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        //  Inhibitor should be on
+        assertFalse(simulation.activated(1,2));
+    }
+
+    @Test
+    public void testNeighboursOfInhibitorDeactivateIfInhibitorIsActivated() {
+        //  Set up inhibitory cell
+        cellTypes.setBit(1,2, CellTypes.INHIBITOR, true);
+        cellTypes.setBit(1,2, CellTypes.InhibitorTypes.TwoCells.position, true);
+
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(cells, cellTypes);
+        CellTypeSensitiveCell cell = new CellTypeSensitiveCell(simulation);
+
+        simulation.activate(1,2);
+        simulation.activate(1,1);
+        simulation.nextEpoch();
+
+        //  Now have the cell at 1,1 take its turn and it should deactivate
+        cell.takeTurn(1,1);
+        simulation.nextEpoch();
+
+        assertFalse(simulation.activated(1,1));
+    }
+
 }

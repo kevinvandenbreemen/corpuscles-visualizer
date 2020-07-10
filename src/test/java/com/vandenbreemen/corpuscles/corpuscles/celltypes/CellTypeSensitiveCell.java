@@ -26,6 +26,13 @@ public class CellTypeSensitiveCell extends Corpuscle {
         return cellTypeSimulation().cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.COUPLER);
     }
 
+    private boolean isInhibitorCell(int alongHeight, int alongWidth) {
+        if(cellTypeSimulation().cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.INHIBITOR)){
+            return !isCouplingCell(alongHeight, alongWidth);
+        }
+        return false;
+    }
+
     /**
      * Returns a quad of cell coordinates for the endpoints of a coupler cell
      * @param alongHeight
@@ -65,11 +72,51 @@ public class CellTypeSensitiveCell extends Corpuscle {
     public void takeTurn(int alongHeight, int alongWidth) {
 
         int[] neighbourhood = simulation.getMooreNeighbourhoodRange(alongHeight, alongWidth);
+
+        //  First check if we're being inhibited
+        for(int i=neighbourhood[HEIGHT_MIN]; i<=neighbourhood[HEIGHT_MAX]; i++) {
+            for (int j = neighbourhood[WIDTH_MIN]; j <= neighbourhood[WIDTH_MAX]; j++) {
+                if (i == alongHeight && j == alongWidth) {
+                    continue;
+                }
+                if (isInhibitorCell(i, j) && simulation.activated(i, j)) {
+                    simulation.deactivate(alongHeight, alongWidth);
+                    return;
+                }
+            }
+        }
+
+
         Simulation cellTypes = cellTypeSimulation().cellTypes;
         boolean isCouplingCell = isCouplingCell(alongHeight, alongWidth);
+        boolean isInhibitor = isInhibitorCell(alongHeight, alongWidth);
         boolean isCouplingEndpoint = cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.COUPLER_ENDPOINT);
 
-        if(isCouplingCell) {
+        if (isInhibitor) {
+            int numRequiredForActivation = 9;   //  Too many so not satisfied
+            if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.InhibitorTypes.TwoCells.position)) {
+                numRequiredForActivation = 2;
+            }
+
+            int numActivated = 0;
+            for(int i=neighbourhood[HEIGHT_MIN]; i<=neighbourhood[HEIGHT_MAX]; i++) {
+                for (int j = neighbourhood[WIDTH_MIN]; j <= neighbourhood[WIDTH_MAX]; j++) {
+                    if (i == alongHeight && j == alongWidth) {
+                        continue;
+                    }
+                    if(simulation.activated(i, j)) {
+                        numActivated ++;
+                    }
+                }
+            }
+
+            if(numActivated >= numRequiredForActivation) {
+                simulation.activate(alongHeight, alongWidth);
+            } else {
+                simulation.deactivate(alongHeight, alongWidth);
+            }
+        }
+        else if(isCouplingCell) {
 
             //  Step 1:  Identify the cells we're coupling
             int[] cellCoordOne;
@@ -121,8 +168,8 @@ public class CellTypeSensitiveCell extends Corpuscle {
             }
 
         } else if(isCouplingEndpoint) {
-            for(int i=neighbourhood[HEIGHT_MIN]; i<neighbourhood[HEIGHT_MAX]; i++) {
-                for(int j= neighbourhood[WIDTH_MIN]; j<neighbourhood[WIDTH_MAX]; j++) {
+            for(int i=neighbourhood[HEIGHT_MIN]; i<=neighbourhood[HEIGHT_MAX]; i++) {
+                for(int j= neighbourhood[WIDTH_MIN]; j<=neighbourhood[WIDTH_MAX]; j++) {
                     if(i==alongHeight && j==alongWidth) { continue; }
                     if(isCouplingCell(i, j) && simulation.activated(i,j)) {
                         int[] couplingEndpointLocations = getCouplingEndpointLocations(i, j);

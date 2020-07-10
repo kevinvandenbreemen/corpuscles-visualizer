@@ -22,15 +22,23 @@ public class CellTypeSensitiveCell extends Corpuscle {
         }
     }
 
-    private boolean isCouplingCell(int alongHeight, int alongWidth) {
+    public boolean isCouplingCell(int alongHeight, int alongWidth) {
         return cellTypeSimulation().cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.COUPLER);
     }
 
-    private boolean isInhibitorCell(int alongHeight, int alongWidth) {
+    public boolean isInhibitorCell(int alongHeight, int alongWidth) {
         if(cellTypeSimulation().cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.INHIBITOR)){
             return !isCouplingCell(alongHeight, alongWidth);
         }
         return false;
+    }
+
+    public boolean isPulsingCell(int alongHeight, int alongWidth) {
+        return isCouplingCell(alongHeight, alongWidth) && isCouplingEndpoint(alongHeight, alongWidth);
+    }
+
+    public boolean isCouplingEndpoint(int alongHeight, int alongWidth) {
+        return cellTypeSimulation().cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.COUPLER_ENDPOINT);
     }
 
     /**
@@ -88,11 +96,8 @@ public class CellTypeSensitiveCell extends Corpuscle {
 
 
         Simulation cellTypes = cellTypeSimulation().cellTypes;
-        boolean isCouplingCell = isCouplingCell(alongHeight, alongWidth);
-        boolean isInhibitor = isInhibitorCell(alongHeight, alongWidth);
-        boolean isCouplingEndpoint = cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.COUPLER_ENDPOINT);
 
-        if (isInhibitor) {
+        if (isInhibitorCell(alongHeight, alongWidth)) {
             int numRequiredForActivation = 9;   //  Too many so not satisfied
             if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.InhibitorTypes.TwoCells.position)) {
                 numRequiredForActivation = 2;
@@ -117,14 +122,14 @@ public class CellTypeSensitiveCell extends Corpuscle {
             } else {
                 simulation.deactivate(alongHeight, alongWidth);
             }
-        } else if (isCouplingCell && isCouplingEndpoint) {  //  Pulsing cell
+        } else if (isPulsingCell(alongHeight, alongWidth)) {  //  Pulsing cell
             if(!simulation.activated(alongHeight, alongWidth)) {
                 simulation.activate(alongHeight, alongWidth);
             } else {
                 simulation.deactivate(alongHeight, alongWidth);
             }
         }
-        else if(isCouplingCell) {
+        else if(isCouplingCell(alongHeight, alongWidth)) {
 
             //  Step 1:  Identify the cells we're coupling
             int[] cellCoordOne;
@@ -175,7 +180,7 @@ public class CellTypeSensitiveCell extends Corpuscle {
 
             }
 
-        } else if(isCouplingEndpoint) {
+        } else if(isCouplingEndpoint(alongHeight, alongWidth)) {
             for(int i=neighbourhood[HEIGHT_MIN]; i<=neighbourhood[HEIGHT_MAX]; i++) {
                 for(int j= neighbourhood[WIDTH_MIN]; j<=neighbourhood[WIDTH_MAX]; j++) {
                     if(i==alongHeight && j==alongWidth) { continue; }

@@ -2,15 +2,12 @@ package com.vandenbreemen.corpuscles.visualizer;
 
 import com.vandenbreemen.corpuscles.CellularAutomaton;
 import com.vandenbreemen.corpuscles.Simulation;
-import com.vandenbreemen.corpuscles.corpuscle.ConwayCell;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static java.lang.Thread.sleep;
 
 public class CorpusclesVisualizer extends JFrame  {
 
@@ -134,6 +131,13 @@ public class CorpusclesVisualizer extends JFrame  {
 
     private void performAutomataStuff() {
         automaton.performNextEpoch();
+        canvas.repaint();
+    }
+
+    /**
+     * Redraw the current
+     */
+    public void redraw() {
         canvas.repaint();
     }
 

@@ -56,4 +56,12 @@ abstract public class CellTypeSensitiveEvolver {
         System.out.println("cost0: " + testSolution(cellTypesSets.get(0)));
         System.out.println("costLast: " + testSolution(cellTypesSets.get(cellTypesSets.size()-1)));
     }
+
+    /**
+     * Returns the best solution found after the latest run of {@link #testSolutions()}.
+     * @return
+     */
+    public CorpusclesData bestSolution() {
+        return cellTypesSets.get(0);
+    }
 }

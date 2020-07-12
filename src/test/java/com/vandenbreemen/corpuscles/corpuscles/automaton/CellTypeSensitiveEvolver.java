@@ -10,7 +10,7 @@ abstract public class CellTypeSensitiveEvolver {
     private int width;
     private int height;
 
-    private List<CorpusclesData> cellTypesSets;
+    List<CorpusclesData> cellTypesSets;
 
     private CellTypesMutator mutator;
     private CellTypesBuilder builder;

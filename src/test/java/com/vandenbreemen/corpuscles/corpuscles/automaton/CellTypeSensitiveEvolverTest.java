@@ -12,12 +12,14 @@ public class CellTypeSensitiveEvolverTest {
     @Test
     public void testEvolution() {
 
+        CellTypesMutator mutator = new CellTypesMutator(1.0);
+
         //  Define a tester
         int[] expectedActivations = { 0,1, 1,1};
         int[] inputs = {0,0};
         CellTypesTester tester = new CellTypesTester();
 
-        CellTypeSensitiveEvolver evolver = new CellTypeSensitiveEvolver(new CellTypesMutator(), new CellTypesBuilder(), 2, 2) {
+        CellTypeSensitiveEvolver evolver = new CellTypeSensitiveEvolver(mutator, new CellTypesBuilder(), 2, 2) {
             @Override
             protected double testSolution(CorpusclesData cellTypes) {
                 return tester.testSolution(cellTypes, 2, inputs, expectedActivations);
@@ -30,6 +32,9 @@ public class CellTypeSensitiveEvolverTest {
 
     @Test
     public void testEvolutionOfSolutions() {
+
+        CellTypesMutator mutator = new CellTypesMutator(0.2);
+
         CellTypesProcreator procreator = new CellTypesProcreator();
         int height = 10;
         int width = 10;
@@ -39,7 +44,7 @@ public class CellTypeSensitiveEvolverTest {
         int[] inputs = {0,0, 3,0};
         CellTypesTester tester = new CellTypesTester();
 
-        CellTypeSensitiveEvolver evolver = new CellTypeSensitiveEvolver(new CellTypesMutator(), new CellTypesBuilder(), height, width) {
+        CellTypeSensitiveEvolver evolver = new CellTypeSensitiveEvolver(mutator, new CellTypesBuilder(), height, width) {
             @Override
             protected double testSolution(CorpusclesData cellTypes) {
                 return tester.testSolution(cellTypes, 3, inputs, expectedActivations);
@@ -54,9 +59,9 @@ public class CellTypeSensitiveEvolverTest {
             evolver.cellTypesSets.remove(7);
             evolver.cellTypesSets.remove(7);
 
-            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, new CellTypesMutator()));
-            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, new CellTypesMutator()));
-            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, new CellTypesMutator()));
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
 
             evolver.testSolutions();
         }
@@ -75,6 +80,8 @@ public class CellTypeSensitiveEvolverTest {
     @Test
     public void testDisplaySolution() {
 
+        CellTypesMutator mutator = new CellTypesMutator(0.5);
+
         int height = 10;
         int width = 10;
 
@@ -83,7 +90,7 @@ public class CellTypeSensitiveEvolverTest {
         int[] inputs = {0,0, 3,0};
         CellTypesTester tester = new CellTypesTester();
 
-        CellTypeSensitiveEvolver evolver = new CellTypeSensitiveEvolver(new CellTypesMutator(), new CellTypesBuilder(), height, width) {
+        CellTypeSensitiveEvolver evolver = new CellTypeSensitiveEvolver(mutator, new CellTypesBuilder(), height, width) {
             @Override
             protected double testSolution(CorpusclesData cellTypes) {
                 return tester.testSolution(cellTypes, 3, inputs, expectedActivations);

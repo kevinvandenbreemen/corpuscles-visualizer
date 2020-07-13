@@ -9,6 +9,19 @@ import java.util.Random;
  */
 public class CellTypesMutator {
 
+    /**
+     * Rate of mutation
+     */
+    private double mutationRate;
+
+    /**
+     * Define a new
+     * @param mutationRate
+     */
+    public CellTypesMutator(double mutationRate) {
+        this.mutationRate = mutationRate;
+    }
+
     public void mutate(CorpusclesData data) {
 
         Random random = new Random(System.currentTimeMillis());
@@ -17,7 +30,7 @@ public class CellTypesMutator {
         for(int alongHeight = 0; alongHeight<data.height(); alongHeight++) {
             for(int alongWidth = 0; alongWidth<data.width(); alongWidth ++) {
 
-                if(random.nextBoolean()) {
+                if(random.nextDouble() >= mutationRate) {
 
                     for(int i=0; i<8; i++) {
                         if(random.nextBoolean()) {

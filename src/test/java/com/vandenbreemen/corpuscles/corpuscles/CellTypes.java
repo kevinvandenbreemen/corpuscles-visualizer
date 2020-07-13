@@ -39,6 +39,7 @@ public class CellTypes {
 
         public static class CouplerActivations {
             public static final int FIRST_3 = 6;
+            public static final int FIRST_4 = 7;
         }
 
     }

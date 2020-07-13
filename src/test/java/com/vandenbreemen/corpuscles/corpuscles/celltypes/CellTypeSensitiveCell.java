@@ -157,10 +157,20 @@ public class CellTypeSensitiveCell extends Corpuscle {
             if(cell1On && cell2On) {
 
                 //  Do I just want to turn on my first three slots?
-                if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.CouplerTypes.CouplerActivations.FIRST_3)) {
+                if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.CouplerTypes.CouplerActivations.FIRST_3) ||
+                        cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.CouplerTypes.CouplerActivations.FIRST_4)) {
+
+                    boolean isFirst4 = cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.CouplerTypes.CouplerActivations.FIRST_4);
 
                     //  Step 3a:  Are all my bits turned on?
-                    if(simulation.bitIsOn(alongHeight, alongWidth, 1) &&
+                    if(isFirst4 && simulation.bitIsOn(alongHeight, alongWidth, 1) &&
+                            simulation.bitIsOn(alongHeight, alongWidth, 2) &&
+                            simulation.bitIsOn(alongHeight, alongWidth, 3) &&
+                            simulation.bitIsOn(alongHeight, alongWidth, 4)
+                    ) {
+                        simulation.activate(alongHeight, alongWidth);
+                    }
+                    else if(!isFirst4 && simulation.bitIsOn(alongHeight, alongWidth, 1) &&
                             simulation.bitIsOn(alongHeight, alongWidth, 2) &&
                             simulation.bitIsOn(alongHeight, alongWidth, 3)) {
                         simulation.activate(alongHeight, alongWidth);
@@ -174,6 +184,8 @@ public class CellTypeSensitiveCell extends Corpuscle {
                         }
                         else if(!simulation.bitIsOn(alongHeight, alongWidth, 3)) {
                             simulation.setBit(alongHeight, alongWidth, 3, true);
+                        } else if (isFirst4 && ! simulation.bitIsOn(alongHeight, alongWidth, 4)) {
+                            simulation.setBit(alongHeight, alongWidth, 4, true);
                         }
                     }
                 }

@@ -28,15 +28,15 @@ public class CellTypeSensitiveRenderer extends CellRenderer {
         String cellTypeStr = "unkn";
 
         Color color = Color.white;
-        if(cell.isInhibitorCell(alongHeight, alongWidth)) {
+        if(cell.isPulsingCell(alongHeight, alongWidth)) {
+            color = Color.orange;
+            cellTypeStr = "plsr";
+        } else if(cell.isInhibitorCell(alongHeight, alongWidth)) {
             color = Color.RED;
             cellTypeStr = "inhb";
         } else if(cell.isCouplingCell(alongHeight, alongWidth)) {
             color = Color.blue;
             cellTypeStr = "cpl";
-        } else if(cell.isPulsingCell(alongHeight, alongWidth)) {
-            color = Color.orange;
-            cellTypeStr = "plsr";
         } else if(cell.isCouplingEndpoint(alongHeight, alongWidth)) {
             color = Color.green;
             cellTypeStr = "edpt";

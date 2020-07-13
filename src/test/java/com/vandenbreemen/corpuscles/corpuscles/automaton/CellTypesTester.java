@@ -45,9 +45,14 @@ public class CellTypesTester {
     }
 
     public double computeCost(CorpusclesData data, int[] coordinatesOfCellsToBeActivated) {
+        return computeCost(data, coordinatesOfCellsToBeActivated, null);
+    }
+
+    public double computeCost(CorpusclesData data, int[] coordinatesOfCellsToBeActivated, int[] coordinatesOfCellsToBeInactive) {
         if(coordinatesOfCellsToBeActivated == null || coordinatesOfCellsToBeActivated.length % 2 != 0) {
             throw new RuntimeException("coordinatesOfCellsToBeActivated:  Must be array of ordered coordinate pairs");
         }
+        int numCellsToCheck = coordinatesOfCellsToBeActivated.length;
 
         int countWrong = 0;
         int alongHeight;
@@ -61,6 +66,26 @@ public class CellTypesTester {
             }
         }
 
-        return (double)countWrong / (double)(coordinatesOfCellsToBeActivated.length/2);
+        if(coordinatesOfCellsToBeInactive != null) {
+            if(coordinatesOfCellsToBeInactive.length % 2 != 0) {
+                throw new RuntimeException("coordinatesOfCellsToBeInactive:  Must be an array of ordered coordinate pairs");
+            }
+
+            numCellsToCheck += coordinatesOfCellsToBeInactive.length;
+
+            for(int i=0; i<coordinatesOfCellsToBeInactive.length; i+=2) {
+                alongHeight = coordinatesOfCellsToBeInactive[i];
+                alongWidth = coordinatesOfCellsToBeInactive[i+1];
+
+                if(data.activated(alongHeight, alongWidth)) {
+                    countWrong ++;
+                }
+            }
+        }
+
+
+        numCellsToCheck /= 2;
+
+        return (double)countWrong / (double)numCellsToCheck;
     }
 }

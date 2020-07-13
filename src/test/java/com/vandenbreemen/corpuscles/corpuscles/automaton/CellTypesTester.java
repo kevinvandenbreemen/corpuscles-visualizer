@@ -15,6 +15,21 @@ public class CellTypesTester {
      */
     public double testSolution(CorpusclesData cellTypes, int numIterations, int[] inputs, int[] expectedActivations) {
 
+        return testSolution(cellTypes, numIterations, inputs, expectedActivations, null);
+
+    }
+
+    /**
+     * Test the given cell type arrangement with the given set of expected activations
+     * @param cellTypes         Cell types (a la genome)
+     * @param numIterations     Number of iterations after initial stimulations
+     * @param inputs            Inputs to use for stimulating initial inputs
+     * @param expectedActivations   Activations expected
+     * @param   expectedDeactivations   Cells that are expected to be deactivated
+     * @return                  Cost of solution as a value between 0 and 1.
+     */
+    public double testSolution(CorpusclesData cellTypes, int numIterations, int[] inputs, int[] expectedActivations, int[] expectedDeactivations) {
+
         if(inputs == null || inputs.length % 2 != 0) {
             throw new RuntimeException("Inputs must be an array of ordered pairs of coordinates");
         }
@@ -37,7 +52,7 @@ public class CellTypesTester {
         double cost = 0.0;
         for(int i=0; i<numIterations; i++) {
             automaton.performNextEpoch();
-            cost += computeCost(data, expectedActivations);
+            cost += computeCost(data, expectedActivations, expectedDeactivations);
         }
 
         return cost / (double)numIterations;

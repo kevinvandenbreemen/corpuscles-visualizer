@@ -230,13 +230,27 @@ public class CellTypeSensitiveCell extends Corpuscle {
                     simulation.setBit(alongHeight, alongWidth, 2, false);
                 }
 
+            } else if (cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.PulseTypes.ThreeEpochs.position)) {
+                if(!simulation.bitIsOn(alongHeight, alongWidth, 1)) {
+                    simulation.setBit(alongHeight, alongWidth, 1, true);
+                } else if(!simulation.bitIsOn(alongHeight, alongWidth, 2)) {
+                    simulation.setBit(alongHeight, alongWidth, 2, true);
+                } else if(!simulation.bitIsOn(alongHeight, alongWidth, 3)) {
+                    simulation.setBit(alongHeight, alongWidth, 3, true);
+                } else {
+                    simulation.activate(alongHeight, alongWidth);
+                    simulation.setBit(alongHeight, alongWidth, 1, false);
+                    simulation.setBit(alongHeight, alongWidth, 2, false);
+                    simulation.setBit(alongHeight, alongWidth, 3, false);
+                }
             } else {
                 simulation.activate(alongHeight, alongWidth);
             }
         } else {
 
             simulation.deactivate(alongHeight, alongWidth);
-            if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.PulseTypes.TwoEpochs.position)) {
+            if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.PulseTypes.TwoEpochs.position) ||
+                    cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.PulseTypes.ThreeEpochs.position)) {
                 simulation.setBit(alongHeight, alongWidth, 1, true);
             }
         }

@@ -61,7 +61,7 @@ public class CellTypes {
 
     public enum PulseTypes {
         TwoEpochs(3),
-        ;
+        ThreeEpochs(4);
 
         public final int position;
         PulseTypes(int position) {

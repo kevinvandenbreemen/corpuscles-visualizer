@@ -1,6 +1,7 @@
 package com.vandenbreemen.corpuscles.corpuscles.automaton;
 
 import com.vandenbreemen.corpuscles.CorpusclesData;
+import com.vandenbreemen.corpuscles.corpuscles.CellTypes;
 import com.vandenbreemen.corpuscles.corpuscles.celltypes.CellTypeSensitiveCell;
 import com.vandenbreemen.corpuscles.corpuscles.celltypes.CellTypeSensitiveSimulation;
 import com.vandenbreemen.corpuscles.corpuscles.visualizer.CellTypeSensitiveRenderer;
@@ -78,9 +79,131 @@ public class CellTypeSensitiveEvolverTest {
     }
 
     @Test
+    public void testKillOffSolutionsThatCheatUsingBlinkersAsOutputs() {
+
+        CellTypesMutator mutator = new CellTypesMutator(0.05);
+
+        CellTypesProcreator procreator = new CellTypesProcreator();
+        int height = 10;
+        int width = 10;
+
+        //  Define a tester
+        int[] expectedActivations = { 0,9, 1,9, 2,9, 3,9};
+        int[] inputs = {0,0, 3,0};
+        CellTypesTester tester = new CellTypesTester();
+
+        CellTypeSensitiveEvolver evolver = new CellTypeSensitiveEvolver(mutator, new CellTypesBuilder(), height, width) {
+            @Override
+            protected double testSolution(CorpusclesData cellTypes) {
+
+                //  Check for pulsers as outputs
+                double nonEndpointCost = 1.0;
+                for(int i=0; i<expectedActivations.length; i+=2) {
+                    if(cellTypes.bitIsOn(expectedActivations[i], expectedActivations[i+1], CellTypes.COUPLER) &&
+                            cellTypes.bitIsOn(expectedActivations[i], expectedActivations[i+1], CellTypes.COUPLER_ENDPOINT)
+                    ) {
+                        return 1.0;
+                    } else if(!cellTypes.bitIsOn(expectedActivations[i], expectedActivations[i+1], CellTypes.COUPLER_ENDPOINT)) {
+                        nonEndpointCost *= 0.8;
+                    }
+                }
+
+                double defaultActivationCost = tester.testSolution(cellTypes, 10, new int[0], new int[0], expectedActivations);
+
+                return defaultActivationCost + tester.testSolution(cellTypes, 8, inputs, expectedActivations) / nonEndpointCost;
+            }
+        };
+        evolver.prepareSolutions(); //  Generate genepool
+        evolver.testSolutions();
+
+        for(int i=0; i<500; i++) {
+            //  Remove the last 3
+            evolver.cellTypesSets.remove(7);
+            evolver.cellTypesSets.remove(7);
+            evolver.cellTypesSets.remove(7);
+
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
+
+            evolver.testSolutions();
+        }
+
+        CorpusclesData optimalSolution = evolver.bestSolution();
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(new CorpusclesData(height,width), optimalSolution);
+        CellTypeSensitiveRenderer renderer = new CellTypeSensitiveRenderer(new CellTypeSensitiveCell(simulation));
+        CorpusclesVisualizer visualizer = new CorpusclesVisualizer(simulation, new CellTypeSensitiveAutomaton(simulation), renderer);
+
+        try {
+            Thread.sleep(100000);
+        }catch(Exception ex) {}
+
+    }
+
+    @Test
+    public void testEvolutionOfBaselineStateWhereNoOutputCellsAreActivated() {
+
+        CellTypesMutator mutator = new CellTypesMutator(0.3);
+
+        CellTypesProcreator procreator = new CellTypesProcreator();
+        int height = 10;
+        int width = 10;
+
+        //  Define a tester
+        int[] expectedActivations = { 0,9, 1,9, 2,9, 3,9};
+        int[] inputs = {0,0, 3,0};
+
+        int[] inputsForTurnOff = {
+
+        };
+        int[] expectedDeactivatedCells = {
+                0,9,
+                1,9,
+                2,9,
+                3,9
+        };
+
+        CellTypesTester tester = new CellTypesTester();
+
+        CellTypeSensitiveEvolver evolver = new CellTypeSensitiveEvolver(mutator, new CellTypesBuilder(), height, width) {
+            @Override
+            protected double testSolution(CorpusclesData cellTypes) {
+                double firstTestResult = tester.testSolution(cellTypes, 3, inputs, expectedActivations);
+                double secondTestResult = tester.testSolution(cellTypes, 3, inputsForTurnOff, new int[0], expectedDeactivatedCells);
+                return (firstTestResult * secondTestResult) + Math.abs(firstTestResult - secondTestResult);
+            }
+        };
+        evolver.prepareSolutions(); //  Generate genepool
+        evolver.testSolutions();
+
+        for(int i=0; i<2000; i++) {
+            //  Remove the last 3
+            evolver.cellTypesSets.remove(7);
+            evolver.cellTypesSets.remove(7);
+            evolver.cellTypesSets.remove(7);
+
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
+
+            evolver.testSolutions();
+        }
+
+        CorpusclesData optimalSolution = evolver.bestSolution();
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(new CorpusclesData(height,width), optimalSolution);
+        CellTypeSensitiveRenderer renderer = new CellTypeSensitiveRenderer(new CellTypeSensitiveCell(simulation));
+        CorpusclesVisualizer visualizer = new CorpusclesVisualizer(simulation, new CellTypeSensitiveAutomaton(simulation), renderer);
+
+        try {
+            Thread.sleep(10000);
+        }catch(Exception ex) {}
+
+    }
+
+    @Test
     public void tryDefiningANetworkWithInputsThatContradictEachOther() {
 
-        CellTypesMutator mutator = new CellTypesMutator(0.2);
+        CellTypesMutator mutator = new CellTypesMutator(0.1);
 
         CellTypesProcreator procreator = new CellTypesProcreator();
         int height = 10;
@@ -108,18 +231,20 @@ public class CellTypeSensitiveEvolverTest {
             protected double testSolution(CorpusclesData cellTypes) {
                 double firstTestResult = tester.testSolution(cellTypes, 3, inputs, expectedActivations);
                 double secondTestResult = tester.testSolution(cellTypes, 3, inputsForTurnOff, new int[0], expectedDeactivatedCells);
-                return (firstTestResult * secondTestResult) + Math.abs(firstTestResult - secondTestResult);
+                return ((firstTestResult + secondTestResult)/2) + Math.abs(firstTestResult - secondTestResult);
             }
         };
         evolver.prepareSolutions(); //  Generate genepool
         evolver.testSolutions();
 
-        for(int i=0; i<200; i++) {
+        for(int i=0; i<2000; i++) {
             //  Remove the last 3
-            evolver.cellTypesSets.remove(7);
-            evolver.cellTypesSets.remove(7);
-            evolver.cellTypesSets.remove(7);
+            evolver.cellTypesSets.remove(evolver.cellTypesSets.size()-1);
+            evolver.cellTypesSets.remove(evolver.cellTypesSets.size()-1);
+            evolver.cellTypesSets.remove(evolver.cellTypesSets.size()-1);
+            evolver.cellTypesSets.remove(evolver.cellTypesSets.size()-1);
 
+            evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
             evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
             evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
             evolver.cellTypesSets.add(procreator.getNextSolution(evolver.cellTypesSets, mutator));
@@ -133,7 +258,7 @@ public class CellTypeSensitiveEvolverTest {
         CorpusclesVisualizer visualizer = new CorpusclesVisualizer(simulation, new CellTypeSensitiveAutomaton(simulation), renderer);
 
         try {
-            Thread.sleep(10000);
+            Thread.sleep(100000);
         }catch(Exception ex) {}
 
     }

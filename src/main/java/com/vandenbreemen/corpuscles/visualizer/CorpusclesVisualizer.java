@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CorpusclesVisualizer extends JFrame  {
 
-    private static final long DELAY = 10;
+    private static final long DELAY = 100;
 
     private Simulation simulation;
 

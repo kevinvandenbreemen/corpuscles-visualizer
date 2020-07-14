@@ -177,7 +177,13 @@ public class CellTypeSensitiveCell extends Corpuscle {
         boolean cell2On = simulation.activated(cellCoordTwo[0], cellCoordTwo[1]) || simulation.activated(cellCoordTwo[1], cellCoordTwo[0]);
 
         //  Step 3:  Determine what to do with activations
-        if(cell1On && cell2On) {
+
+        boolean carrySignalForward = cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.CouplerTypes.CouplerActivations.FIRST_3) &&
+                cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.CouplerTypes.CouplerActivations.FIRST_4);
+        if (carrySignalForward && (cell1On || cell2On)){
+            simulation.activate(alongHeight, alongWidth);
+        }
+        else if(cell1On && cell2On) {
 
             //  Do I just want to turn on my first three slots?
             if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.CouplerTypes.CouplerActivations.FIRST_3) ||

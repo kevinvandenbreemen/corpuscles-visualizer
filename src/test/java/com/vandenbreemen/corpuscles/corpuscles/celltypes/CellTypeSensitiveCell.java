@@ -123,29 +123,7 @@ public class CellTypeSensitiveCell extends Corpuscle {
                 simulation.deactivate(alongHeight, alongWidth);
             }
         } else if (isPulsingCell(alongHeight, alongWidth)) {  //  Pulsing cell
-            if(!simulation.activated(alongHeight, alongWidth)) {
-
-                if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.PulseTypes.TwoEpochs.position)) {
-                    if(!simulation.bitIsOn(alongHeight, alongWidth, 1)) {
-                        simulation.setBit(alongHeight, alongWidth, 1, true);
-                    } else if(!simulation.bitIsOn(alongHeight, alongWidth, 2)) {
-                        simulation.setBit(alongHeight, alongWidth, 2, true);
-                    } else {
-                        simulation.activate(alongHeight, alongWidth);
-                        simulation.setBit(alongHeight, alongWidth, 1, false);
-                        simulation.setBit(alongHeight, alongWidth, 2, false);
-                    }
-
-                } else {
-                    simulation.activate(alongHeight, alongWidth);
-                }
-            } else {
-
-                simulation.deactivate(alongHeight, alongWidth);
-                if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.PulseTypes.TwoEpochs.position)) {
-                    simulation.setBit(alongHeight, alongWidth, 1, true);
-                }
-            }
+            doPulsingCellLogic(alongHeight, alongWidth, cellTypes);
         }
         else if(isCouplingCell(alongHeight, alongWidth)) {
 
@@ -225,5 +203,31 @@ public class CellTypeSensitiveCell extends Corpuscle {
             }
         }
 
+    }
+
+    private void doPulsingCellLogic(int alongHeight, int alongWidth, Simulation cellTypes) {
+        if(!simulation.activated(alongHeight, alongWidth)) {
+
+            if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.PulseTypes.TwoEpochs.position)) {
+                if(!simulation.bitIsOn(alongHeight, alongWidth, 1)) {
+                    simulation.setBit(alongHeight, alongWidth, 1, true);
+                } else if(!simulation.bitIsOn(alongHeight, alongWidth, 2)) {
+                    simulation.setBit(alongHeight, alongWidth, 2, true);
+                } else {
+                    simulation.activate(alongHeight, alongWidth);
+                    simulation.setBit(alongHeight, alongWidth, 1, false);
+                    simulation.setBit(alongHeight, alongWidth, 2, false);
+                }
+
+            } else {
+                simulation.activate(alongHeight, alongWidth);
+            }
+        } else {
+
+            simulation.deactivate(alongHeight, alongWidth);
+            if(cellTypes.bitIsOn(alongHeight, alongWidth, CellTypes.PulseTypes.TwoEpochs.position)) {
+                simulation.setBit(alongHeight, alongWidth, 1, true);
+            }
+        }
     }
 }

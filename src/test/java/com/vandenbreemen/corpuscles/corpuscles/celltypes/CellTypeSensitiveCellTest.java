@@ -292,4 +292,41 @@ public class CellTypeSensitiveCellTest {
         assertFalse(simulation.activated(1,2));
     }
 
+    @Test
+    public void testPulsingCellDeactivatesForTwoEpochsWhenConfiguredToDoSo() {
+        //  Set up pulsing cell
+        cellTypes.setBit(1,2,CellTypes.COUPLER_ENDPOINT, true);
+        cellTypes.setBit(1,2,CellTypes.COUPLER, true);
+        cellTypes.setBit(1,2, CellTypes.PulseTypes.TwoEpochs.position, true);
+
+        CellTypeSensitiveSimulation simulation = new CellTypeSensitiveSimulation(cells, cellTypes);
+        CellTypeSensitiveCell cell = new CellTypeSensitiveCell(simulation);
+
+        //  Blinker off for first two iterations
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+        assertFalse(simulation.activated(1,2));
+
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+        assertFalse(simulation.activated(1,2));
+
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+        assertTrue(simulation.activated(1,2));
+
+        //  Then turns off for another two iterations
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+        assertFalse(simulation.activated(1,2));
+
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+        assertFalse(simulation.activated(1,2));
+
+        cell.takeTurn(1,2);
+        simulation.nextEpoch();
+        assertTrue(simulation.activated(1,2));
+    }
+
 }

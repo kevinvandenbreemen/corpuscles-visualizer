@@ -58,4 +58,14 @@ public class CellTypes {
         }
 
     }
+
+    public enum PulseTypes {
+        TwoEpochs(3),
+        ;
+
+        public final int position;
+        PulseTypes(int position) {
+            this.position = position;
+        }
+    }
 }

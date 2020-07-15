@@ -11,6 +11,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.kevinvandenbreemen:corpuscles:1.0.4.3000'
+
+    def corpusclesVersion = "1.0.4.5000"
+
+    implementation "com.github.kevinvandenbreemen:corpuscles:$corpusclesVersion"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

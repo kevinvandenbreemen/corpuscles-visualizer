@@ -22,14 +22,14 @@ public class LocallyConnectedNeuralNet extends CorpusclesData {
         RIGHT
     }
 
-    private byte[][] toCellAbove;
-    private byte[][] toCellBelow;
-    private byte[][] toRightCell;
-    private byte[][] toLeftCell;
-    private byte[][] toUpperRightCell;
-    private byte[][] toUpperLeftCell;
-    private byte[][] toLowerRightCell;
-    private byte[][] toLowerLeftCell;
+    byte[][] toCellAbove;
+    byte[][] toCellBelow;
+    byte[][] toRightCell;
+    byte[][] toLeftCell;
+    byte[][] toUpperRightCell;
+    byte[][] toUpperLeftCell;
+    byte[][] toLowerRightCell;
+    byte[][] toLowerLeftCell;
 
     public LocallyConnectedNeuralNet(int height, int width) {
         super(height, width);
@@ -42,6 +42,29 @@ public class LocallyConnectedNeuralNet extends CorpusclesData {
         toUpperRightCell = new byte[height][width];
         toLowerLeftCell = new byte[height][width];
         toLowerRightCell = new byte[height][width];
+    }
+
+    @Override
+    protected void overwriteWith(CorpusclesData data) {
+        if(!(data instanceof  LocallyConnectedNeuralNet)) {
+            throw new RuntimeException("Overwrite with - cannot use data that is not a " + LocallyConnectedNeuralNet.class.getSimpleName());
+        }
+
+        LocallyConnectedNeuralNet otherNet = (LocallyConnectedNeuralNet)data;
+
+        super.overwriteWith(data);
+
+        for (int i = 0; i < this.height(); i++) {
+            System.arraycopy(otherNet.toCellAbove[i], 0, toCellAbove[i], 0, width());
+            System.arraycopy(otherNet.toCellBelow[i], 0, toCellBelow[i], 0, width());
+            System.arraycopy(otherNet.toLeftCell[i], 0, toLeftCell[i], 0, width());
+            System.arraycopy(otherNet.toRightCell[i], 0, toRightCell[i], 0, width());
+            System.arraycopy(otherNet.toUpperLeftCell[i], 0, toUpperLeftCell[i], 0, width());
+            System.arraycopy(otherNet.toUpperRightCell[i], 0, toUpperRightCell[i], 0, width());
+            System.arraycopy(otherNet.toLowerLeftCell[i], 0, toLowerLeftCell[i], 0, width());
+            System.arraycopy(otherNet.toLowerRightCell[i], 0, toLowerRightCell[i], 0, width());
+        }
+
     }
 
     public void setStrength(int alongHeight, int alongWidth, ConnectionDirection direction, byte strength) {

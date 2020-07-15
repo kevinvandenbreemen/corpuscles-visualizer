@@ -44,4 +44,12 @@ public class LocallyConnectedNeuralNetSimulation extends Simulation {
     public byte strength(int alongHeight, int alongWidth, LocallyConnectedNeuralNet.ConnectionDirection direction) {
         return physicalNetwork.strength(alongHeight, alongWidth, direction);
     }
+
+    /**
+     * Gets the cell types associated with this simulation
+     * @return
+     */
+    public CorpusclesData getCellTypes() {
+        return neuralCellTypes;
+    }
 }

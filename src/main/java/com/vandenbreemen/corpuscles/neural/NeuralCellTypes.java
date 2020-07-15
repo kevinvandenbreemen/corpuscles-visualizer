@@ -24,6 +24,7 @@ public class NeuralCellTypes {
 
     NeuralCellTypes(LocallyConnectedNeuralNetSimulation simulation) {
         this.simulation = simulation;
+        this.cellTypes = simulation.getCellTypes();
     }
 
     void performAction(int alongHeight, int alongWidth) {

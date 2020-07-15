@@ -5,16 +5,6 @@ import com.vandenbreemen.corpuscles.Simulation;
 
 public class LocallyConnectedNeuralNetSimulation extends Simulation {
 
-    //  Copies of the values in the locally connected net
-    private byte[][] toCellAbove;
-    private byte[][] toCellBelow;
-    private byte[][] toRightCell;
-    private byte[][] toLeftCell;
-    private byte[][] toUpperRightCell;
-    private byte[][] toUpperLeftCell;
-    private byte[][] toLowerRightCell;
-    private byte[][] toLowerLeftCell;
-
     //  Same reference as data in supertype but saves on having to check typecasts etc.
     private LocallyConnectedNeuralNet physicalNetwork;
 

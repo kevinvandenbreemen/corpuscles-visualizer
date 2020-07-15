@@ -42,7 +42,10 @@ public class NeuralCellTypes {
                 if(isFireTogetherWireTogether && simulation.activated(h,w)) {
                     LocallyConnectedNeuralNet.ConnectionDirection direction =  LocallyConnectedNeuralNet.getDirectionFrom(alongHeight, alongWidth, h,w);
                     byte strength = simulation.strength(alongHeight, alongWidth, direction);
-                    strength += 1;
+
+                    if(strength < Byte.MAX_VALUE) {
+                        strength += 1;
+                    }
                     simulation.setStrength(alongHeight, alongWidth, direction, strength);
                 }
             }

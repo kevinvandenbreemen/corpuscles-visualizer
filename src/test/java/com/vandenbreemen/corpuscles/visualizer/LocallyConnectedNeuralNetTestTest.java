@@ -16,15 +16,14 @@ public class LocallyConnectedNeuralNetTestTest {
 
     @Test
     public void testGetDirectionFromOrigin() {
-        LocallyConnectedNeuralNet net = new LocallyConnectedNeuralNet(10,10);
-        assertEquals(LEFT, net.getDirectionFrom(1,2,1,1));
-        assertEquals(RIGHT, net.getDirectionFrom(1,2,1,3));
-        assertEquals(ABOVE, net.getDirectionFrom(1,2,2,2));
-        assertEquals(BELOW, net.getDirectionFrom(1,2,0,2));
-        assertEquals(UPPER_LEFT, net.getDirectionFrom(1,2,2,1));
-        assertEquals(UPPER_RIGHT, net.getDirectionFrom(1,2,2,3));
-        assertEquals(LOWER_LEFT, net.getDirectionFrom(1,2,0,1));
-        assertEquals(LOWER_RIGHT, net.getDirectionFrom(1,2,0,3));
+        assertEquals(LEFT, LocallyConnectedNeuralNet.getDirectionFrom(1,2,1,1));
+        assertEquals(RIGHT, LocallyConnectedNeuralNet.getDirectionFrom(1,2,1,3));
+        assertEquals(ABOVE, LocallyConnectedNeuralNet.getDirectionFrom(1,2,2,2));
+        assertEquals(BELOW, LocallyConnectedNeuralNet.getDirectionFrom(1,2,0,2));
+        assertEquals(UPPER_LEFT, LocallyConnectedNeuralNet.getDirectionFrom(1,2,2,1));
+        assertEquals(UPPER_RIGHT, LocallyConnectedNeuralNet.getDirectionFrom(1,2,2,3));
+        assertEquals(LOWER_LEFT, LocallyConnectedNeuralNet.getDirectionFrom(1,2,0,1));
+        assertEquals(LOWER_RIGHT, LocallyConnectedNeuralNet.getDirectionFrom(1,2,0,3));
 
     }
 

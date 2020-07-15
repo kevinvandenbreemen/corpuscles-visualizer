@@ -105,7 +105,7 @@ public class LocallyConnectedNeuralNet extends CorpusclesData {
         return axons;
     }
 
-    public ConnectionDirection getDirectionFrom(int originAlngHeight, int originAlngWidth, int destAlngHeight, int destAlngWidth) {
+    public static ConnectionDirection getDirectionFrom(int originAlngHeight, int originAlngWidth, int destAlngHeight, int destAlngWidth) {
         if(destAlngWidth < originAlngWidth) {   //  To the left
             if(destAlngHeight == originAlngHeight) {
                 return ConnectionDirection.LEFT;

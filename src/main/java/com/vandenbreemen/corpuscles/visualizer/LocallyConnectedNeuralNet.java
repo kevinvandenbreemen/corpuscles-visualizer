@@ -104,4 +104,36 @@ public class LocallyConnectedNeuralNet extends CorpusclesData {
         }
         return axons;
     }
+
+    public ConnectionDirection getDirectionFrom(int originAlngHeight, int originAlngWidth, int destAlngHeight, int destAlngWidth) {
+        if(destAlngWidth < originAlngWidth) {   //  To the left
+            if(destAlngHeight == originAlngHeight) {
+                return ConnectionDirection.LEFT;
+            } else if(destAlngHeight > originAlngHeight) {
+                return ConnectionDirection.UPPER_LEFT;
+            } else if(destAlngHeight < originAlngHeight) {
+                return ConnectionDirection.LOWER_LEFT;
+            }
+        }
+        if(destAlngWidth > originAlngWidth) {   //  To the right
+            if(destAlngHeight == originAlngHeight) {
+                return ConnectionDirection.RIGHT;
+            } else if(destAlngHeight > originAlngHeight) {
+                return ConnectionDirection.UPPER_RIGHT;
+            } else if(destAlngHeight < originAlngHeight) {
+                return ConnectionDirection.LOWER_RIGHT;
+            }
+
+        } else {
+            if(destAlngHeight > originAlngHeight) {
+                return ConnectionDirection.ABOVE;
+            }
+            else {
+                if(destAlngHeight < originAlngHeight) {
+                    return ConnectionDirection.BELOW;
+                }
+            }
+        }
+        return null;
+    }
 }

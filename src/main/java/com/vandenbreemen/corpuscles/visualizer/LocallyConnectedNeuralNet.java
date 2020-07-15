@@ -8,9 +8,6 @@ import com.vandenbreemen.corpuscles.CorpusclesData;
  */
 public class LocallyConnectedNeuralNet extends CorpusclesData {
 
-
-
-
     public enum ConnectionDirection {
         UPPER_RIGHT,
         UPPER_LEFT,

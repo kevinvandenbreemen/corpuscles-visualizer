@@ -77,6 +77,7 @@ public class NeuralCellTypes {
     }
 
     private double sigmoid(double value) {
+        //  Math function created with the help of https://www.desmos.com/calculator
         return 2 * ((1 / (1+ Math.exp(-value))) - 0.5);
     }
 }

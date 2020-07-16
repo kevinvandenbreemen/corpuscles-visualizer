@@ -27,7 +27,7 @@ public class NeuronTest {
         simulation.nextEpoch();
 
         assertTrue(simulation.strength(1,2,
-                LocallyConnectedNeuralNet.ConnectionDirection.LEFT) > 0);
+                LocallyConnectedNeuralNet.ConnectionDirection.LEFT) > Byte.MIN_VALUE);
     }
 
     @Test
@@ -39,6 +39,7 @@ public class NeuronTest {
         LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network);
         simulation.activate(1,1);
         simulation.activate(1,2);
+        simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, Byte.MAX_VALUE);
         simulation.nextEpoch();
 
         Neuron neuron = new Neuron(simulation);
@@ -51,6 +52,31 @@ public class NeuronTest {
 
         assertEquals(Byte.MAX_VALUE, simulation.strength(1,2,
                 LocallyConnectedNeuralNet.ConnectionDirection.LEFT));
+    }
+
+    @Test
+    public void testSigmoidFiring() {
+
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,2, 2, true);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network);
+
+        simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, Byte.MAX_VALUE);
+        simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.RIGHT, Byte.MAX_VALUE);
+
+        simulation.activate(1,1);
+        simulation.activate(1,3);
+
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertTrue(simulation.activated(1,2));
+
     }
 
 }

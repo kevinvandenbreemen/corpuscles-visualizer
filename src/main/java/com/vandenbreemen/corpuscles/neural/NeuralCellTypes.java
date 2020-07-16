@@ -35,12 +35,17 @@ public class NeuralCellTypes {
                 cellTypes.bitIsOn(alongHeight, alongWidth, NeuralGenes.FIRE_TOGETHER_WIRE_TOGETHER)
                         && simulation.activated(alongHeight, alongWidth);
 
+        //  Now sum up all incoming firing connections
+        double totalIncomingStrength = 0;
+        double incomingStrength;
+
         for(int h=neighbourhood[HEIGHT_MIN]; h<=neighbourhood[HEIGHT_MAX]; h++) {
             for(int w = neighbourhood[WIDTH_MIN]; w<=neighbourhood[WIDTH_MAX]; w++) {
                 if(h == alongHeight && w == alongWidth) continue;
 
+                LocallyConnectedNeuralNet.ConnectionDirection direction =  LocallyConnectedNeuralNet.getDirectionFrom(alongHeight, alongWidth, h,w);
+
                 if(isFireTogetherWireTogether && simulation.activated(h,w)) {
-                    LocallyConnectedNeuralNet.ConnectionDirection direction =  LocallyConnectedNeuralNet.getDirectionFrom(alongHeight, alongWidth, h,w);
                     byte strength = simulation.strength(alongHeight, alongWidth, direction);
 
                     if(strength < Byte.MAX_VALUE) {
@@ -48,8 +53,30 @@ public class NeuralCellTypes {
                     }
                     simulation.setStrength(alongHeight, alongWidth, direction, strength);
                 }
+
+                if(simulation.activated(h,w)) {
+                    incomingStrength = (double)simulation.strength(alongHeight, alongWidth, direction);
+                    totalIncomingStrength += incomingStrength;
+                }
+
             }
         }
 
+        //  Determine if we should be firing
+        double sigmoidValue = sigmoid(totalIncomingStrength);
+        if(checkAgainstActivationThreshold(sigmoidValue)) {
+            simulation.activate(alongHeight, alongWidth);
+        } else {
+            simulation.deactivate(alongHeight, alongWidth);
+        }
+
+    }
+
+    private boolean checkAgainstActivationThreshold(double strength) {
+        return strength > 0.7;
+    }
+
+    private double sigmoid(double value) {
+        return 2 * ((1 / (1+ Math.exp(-value))) - 0.5);
     }
 }

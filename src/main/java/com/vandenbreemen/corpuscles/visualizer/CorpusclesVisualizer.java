@@ -1,7 +1,10 @@
 package com.vandenbreemen.corpuscles.visualizer;
 
 import com.vandenbreemen.corpuscles.CellularAutomaton;
+import com.vandenbreemen.corpuscles.Corpuscle;
+import com.vandenbreemen.corpuscles.CorpusclesData;
 import com.vandenbreemen.corpuscles.Simulation;
+import com.vandenbreemen.corpuscles.corpuscle.ConwayCell;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +13,13 @@ import java.awt.event.ActionListener;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CorpusclesVisualizer extends JFrame  {
+
+    /**
+     * Callback for user interaction with the simulation
+     */
+    public static interface CellClickListener {
+        void onClick(int alongHeight, int alongWidth);
+    }
 
     private static final long DELAY = 100;
 
@@ -40,6 +50,14 @@ public class CorpusclesVisualizer extends JFrame  {
 
         setVisible(true);
 
+    }
+
+    /**
+     * Set listener to respond to user interaction with cells in the simulation
+     * @param listener
+     */
+    public void setCellClickListener(CellClickListener listener) {
+        canvas.setCellClickListener(listener);
     }
 
     private void drawButtons() {
@@ -139,6 +157,40 @@ public class CorpusclesVisualizer extends JFrame  {
      */
     public void redraw() {
         canvas.repaint();
+    }
+
+    public static void main(String[] args) {
+        CorpusclesData data = new CorpusclesData(10,10);
+        Simulation simulation = new Simulation(data);
+        simulation.activate(0,0);
+        simulation.activate(0,2);
+        simulation.activate(0,4);
+        simulation.activate(1,4);
+        simulation.activate(2,4);
+        simulation.activate(3,4);
+        simulation.nextEpoch();
+
+        Corpuscle corpuscle = new ConwayCell(simulation);
+
+        CellularAutomaton automaton = new CellularAutomaton(simulation) {
+            @Override
+            protected Corpuscle getCorpuscle(int alongWidth, int alongHeight, Simulation simulation) {
+                return corpuscle;
+            }
+        };
+
+        final CorpusclesVisualizer viz = new CorpusclesVisualizer(simulation, automaton, null);
+        viz.setCellClickListener((alongHeight, alongWidth) -> {
+            if(!simulation.activated(alongHeight, alongWidth)) {
+                simulation.activate(alongHeight, alongWidth);
+            } else {
+                simulation.deactivate(alongHeight, alongWidth);
+            }
+
+            simulation.nextEpoch();
+            viz.repaint();
+        });
+
     }
 
 }

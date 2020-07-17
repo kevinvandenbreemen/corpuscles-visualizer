@@ -4,6 +4,8 @@ import com.vandenbreemen.corpuscles.Simulation;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 //  This code based heavily on https://gist.github.com/berlinbrown/4176103
 //  As per that page I include the following copyright notice:
@@ -39,8 +41,9 @@ import java.awt.*;
  * bbrown
  * Contact: Berlin Brown <berlin dot brown at gmail.com>
  */
-public class GridCanvas extends JPanel {
+public class GridCanvas extends JPanel implements MouseListener {
 
+    private CorpusclesVisualizer.CellClickListener cellClickListener;
     private CellRenderer renderer;
 
     private Simulation simulation;
@@ -52,6 +55,23 @@ public class GridCanvas extends JPanel {
         this.setBackground(Color.white);
         this.simulation = simulation;
         this.renderer = renderer;
+
+        this.cellClickListener = new CorpusclesVisualizer.CellClickListener() {
+            @Override
+            public void onClick(int alongHeight, int alongWidth) {
+                System.out.println("alongHeight = " + alongHeight + ", alongWidth = "+ alongWidth);
+            }
+        };
+
+        addMouseListener(this);
+    }
+
+    /**
+     * Specify listener for cell clicking
+     * @param cellClickListener
+     */
+    public void setCellClickListener(CorpusclesVisualizer.CellClickListener cellClickListener) {
+        this.cellClickListener = cellClickListener;
     }
 
     @Override
@@ -98,6 +118,48 @@ public class GridCanvas extends JPanel {
                 renderer.drawCell(g, wSize, hSize, simulation, h, w, y, x);
             }
         }
+
+    }
+
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+        if(cellClickListener == null) {
+            return;
+        }
+
+        final Dimension d = getSize();
+        int wSize = (int) Math.ceil(((double)d.width / (double)simulation.width()));
+        int hSize = (int) Math.ceil(((double)d.height / (double)simulation.height()));
+
+        int clickX = e.getX();
+        int clickY = e.getY();
+
+        int alongWidth = (int) Math.floor(clickX / wSize);
+        int alongHeight = (int) Math.floor(clickY / hSize);
+
+        cellClickListener.onClick(alongHeight, alongWidth);
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
 
     }
 }

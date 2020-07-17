@@ -65,15 +65,18 @@ public class NeuralCellTypes {
                         cellTypes.bitIsOn(alongHeight, alongWidth, NeuralGenes.FIRE_TOGETHER_WIRE_TOGETHER) && simulation.activated(h,w)
                         ) ){
                     byte strength = simulation.strength(alongHeight, alongWidth, direction);
-                    strength -= strengthIncrement;
-                    simulation.setStrength(alongHeight, alongWidth, direction, strength);
+                    if(strength - strengthIncrement >= 0) {
+                        strength -= strengthIncrement;
+                        simulation.setStrength(alongHeight, alongWidth, direction, strength);
+                    }
+
                 }
 
             }
         }
 
         //  Determine if we should be firing
-        totalIncomingStrength /= (double)10;    //  Compress this down to a range from -5 to +5 so sigmoid function will give meaningful results
+        totalIncomingStrength /= 10;    //  Compress this down to a range from -5 to +5 so sigmoid function will give meaningful results
         double sigmoidValue = sigmoid(totalIncomingStrength);
         if(checkAgainstActivationThreshold(alongHeight, alongWidth, sigmoidValue)) {
             simulation.activate(alongHeight, alongWidth);

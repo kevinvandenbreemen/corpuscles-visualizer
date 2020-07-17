@@ -49,6 +49,11 @@ public class NeuralCellTypes {
 
                 LocallyConnectedNeuralNet.ConnectionDirection direction =  LocallyConnectedNeuralNet.getDirectionFrom(alongHeight, alongWidth, h,w);
 
+                if(simulation.activated(h,w)) {
+                    incomingStrength = (double) simulation.strength(alongHeight, alongWidth, direction);
+                    totalIncomingStrength += incomingStrength;
+                }
+
                 if(isFireTogetherWireTogether && simulation.activated(h,w)) {
                     byte strength = simulation.strength(alongHeight, alongWidth, direction);
 
@@ -56,15 +61,14 @@ public class NeuralCellTypes {
                         strength += strengthIncrement;
                     }
                     simulation.setStrength(alongHeight, alongWidth, direction, strength);
+                } else if(isFireTogetherWireTogether && !simulation.activated(h,w) ){
+                    byte strength = simulation.strength(alongHeight, alongWidth, direction);
+                    strength -= strengthIncrement;
+                    simulation.setStrength(alongHeight, alongWidth, direction, strength);
                 } else if(cellTypes.bitIsOn(alongHeight, alongWidth, NeuralGenes.FIRE_TOGETHER_WIRE_TOGETHER) && simulation.activated(h,w)) {
                     byte strength = simulation.strength(alongHeight, alongWidth, direction);
                     strength -= strengthIncrement;
                     simulation.setStrength(alongHeight, alongWidth, direction, strength);
-                }
-
-                if(isFireTogetherWireTogether) {
-                    incomingStrength = (double)simulation.strength(alongHeight, alongWidth, direction);
-                    totalIncomingStrength += incomingStrength;
                 }
 
             }

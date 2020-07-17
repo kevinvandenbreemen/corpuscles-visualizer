@@ -15,6 +15,9 @@ public class NeuronTest {
         CorpusclesData cellTypes = new CorpusclesData(10,10);
         cellTypes.setBit(1,2, 2, true);
 
+        //  Connection strength increment value
+        cellTypes.writeData(1,2, (byte)2, 3, 4);
+
         LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
         LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
         simulation.activate(1,1);
@@ -26,7 +29,29 @@ public class NeuronTest {
         simulation.nextEpoch();
 
         assertTrue(simulation.strength(1,2,
-                LocallyConnectedNeuralNet.ConnectionDirection.LEFT) > Byte.MIN_VALUE);
+                LocallyConnectedNeuralNet.ConnectionDirection.LEFT) > 0);
+    }
+
+    @Test
+    public void testConnectionStrengthNotChangedIfFireTogetherWireTogetherNotOn() {
+
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+
+        //  Connection strength increment value
+        cellTypes.writeData(1,2, (byte)2, 3, 4);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+        simulation.activate(1,1);
+        simulation.activate(1,2);
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertEquals(0, simulation.strength(1,2,
+                LocallyConnectedNeuralNet.ConnectionDirection.LEFT));
     }
 
     @Test

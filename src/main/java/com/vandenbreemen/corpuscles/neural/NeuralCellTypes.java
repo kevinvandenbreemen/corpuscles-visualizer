@@ -56,7 +56,7 @@ public class NeuralCellTypes {
                     simulation.setStrength(alongHeight, alongWidth, direction, strength);
                 }
 
-                if(simulation.activated(h,w)) {
+                if(isFireTogetherWireTogether) {
                     incomingStrength = (double)simulation.strength(alongHeight, alongWidth, direction);
                     totalIncomingStrength += incomingStrength;
                 }

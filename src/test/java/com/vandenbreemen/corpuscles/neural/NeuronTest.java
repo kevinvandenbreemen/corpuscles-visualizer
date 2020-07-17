@@ -55,6 +55,29 @@ public class NeuronTest {
     }
 
     @Test
+    public void testConnectionStrengthDecreasedIfFireTogetherWireTogetherCurrentCellNotFiringButOtherCellIs() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+
+        //  Connection strength increment value
+        cellTypes.writeData(1,2, (byte)2, 3, 4);
+        cellTypes.setBit(1,2, NeuralCellTypes.NeuralGenes.FIRE_TOGETHER_WIRE_TOGETHER, true);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+        simulation.activate(1,1);
+        simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, (byte)2);
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertEquals(
+                "Adjacent cell was firing while current cell was not.  Connection strength should have decremented",
+                0, simulation.strength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT));
+    }
+
+    @Test
     public void testMaximumConnectionStrength() {
         CorpusclesData cellTypes = new CorpusclesData(10,10);
         cellTypes.setBit(1,2, 2, true);

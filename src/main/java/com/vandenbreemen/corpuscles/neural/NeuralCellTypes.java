@@ -56,6 +56,10 @@ public class NeuralCellTypes {
                         strength += strengthIncrement;
                     }
                     simulation.setStrength(alongHeight, alongWidth, direction, strength);
+                } else if(cellTypes.bitIsOn(alongHeight, alongWidth, NeuralGenes.FIRE_TOGETHER_WIRE_TOGETHER) && simulation.activated(h,w)) {
+                    byte strength = simulation.strength(alongHeight, alongWidth, direction);
+                    strength -= strengthIncrement;
+                    simulation.setStrength(alongHeight, alongWidth, direction, strength);
                 }
 
                 if(isFireTogetherWireTogether) {

@@ -39,6 +39,8 @@ public class NeuralCellTypes {
         double totalIncomingStrength = 0;
         double incomingStrength;
 
+        byte strengthIncrement = cellTypes.data(alongHeight, alongWidth, 3, 4);
+
         for(int h=neighbourhood[HEIGHT_MIN]; h<=neighbourhood[HEIGHT_MAX]; h++) {
             for(int w = neighbourhood[WIDTH_MIN]; w<=neighbourhood[WIDTH_MAX]; w++) {
                 if(h == alongHeight && w == alongWidth) continue;
@@ -49,7 +51,7 @@ public class NeuralCellTypes {
                     byte strength = simulation.strength(alongHeight, alongWidth, direction);
 
                     if(strength < Byte.MAX_VALUE) {
-                        strength += 1;
+                        strength += strengthIncrement;
                     }
                     simulation.setStrength(alongHeight, alongWidth, direction, strength);
                 }

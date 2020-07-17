@@ -16,7 +16,7 @@ public class NeuronTest {
         cellTypes.setBit(1,2, 2, true);
 
         LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
-        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
         simulation.activate(1,1);
         simulation.activate(1,2);
         simulation.nextEpoch();
@@ -35,7 +35,7 @@ public class NeuronTest {
         cellTypes.setBit(1,2, 2, true);
 
         LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
-        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
         simulation.activate(1,1);
         simulation.activate(1,2);
         simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, Byte.MAX_VALUE);
@@ -60,7 +60,7 @@ public class NeuronTest {
         cellTypes.setBit(1,2, 2, true);
 
         LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
-        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
 
         simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, Byte.MAX_VALUE);
         simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.RIGHT, Byte.MAX_VALUE);
@@ -84,7 +84,7 @@ public class NeuronTest {
         cellTypes.setBit(1,2, 2, true);
 
         LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
-        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
 
         simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, (byte)120);
         simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.RIGHT, Byte.MAX_VALUE);
@@ -102,6 +102,30 @@ public class NeuronTest {
         simulation.nextEpoch();
 
         assertFalse(simulation.activated(1,2));
+    }
+    
+    @Test
+    public void testStrengthStepIncrementConfiguration() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,2, 2, true);
+
+        //  Connection strength increment value
+        cellTypes.writeData(1,2, (byte)2, 3, 4);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+
+        simulation.activate(1,1);
+        simulation.activate(1,3);
+        simulation.activate(1,2);
+
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertEquals(2, simulation.strength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.RIGHT));
     }
 
 }

@@ -3,14 +3,14 @@ package com.vandenbreemen.corpuscles.visualizer;
 import org.junit.Test;
 
 import static com.vandenbreemen.corpuscles.visualizer.LocallyConnectedNeuralNet.ConnectionDirection.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LocallyConnectedNeuralNetSimulationTest {
 
     @Test
     public void testPreservesConnectionsAfterEpoch() {
         LocallyConnectedNeuralNet net = new LocallyConnectedNeuralNet(10,10);
-        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(net);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(net, null);
 
         simulation.setStrength(1,2, UPPER_RIGHT, (byte)1);
         simulation.setStrength(1,2, UPPER_LEFT, (byte)2);

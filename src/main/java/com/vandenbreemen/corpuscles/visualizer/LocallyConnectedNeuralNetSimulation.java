@@ -17,16 +17,9 @@ public class LocallyConnectedNeuralNetSimulation extends Simulation {
      */
     private CorpusclesData neuralCellTypes;
 
-    public LocallyConnectedNeuralNetSimulation(CorpusclesData data) {
-        this(data, null);
-    }
-
-    public LocallyConnectedNeuralNetSimulation(CorpusclesData data, CorpusclesData neuralCellTypes) {
+    public LocallyConnectedNeuralNetSimulation(LocallyConnectedNeuralNet data, CorpusclesData neuralCellTypes) {
         super(data);
-        if (!(data instanceof LocallyConnectedNeuralNet) ){
-            throw new RuntimeException("Cannot create this without " + LocallyConnectedNeuralNet.class.getSimpleName());
-        }
-        physicalNetwork = (LocallyConnectedNeuralNet) data;
+        physicalNetwork = data;
         this.neuralCellTypes = neuralCellTypes != null ? neuralCellTypes :
                 new CellTypesBuilder().getCellTypes(data.height(), data.width());
     }

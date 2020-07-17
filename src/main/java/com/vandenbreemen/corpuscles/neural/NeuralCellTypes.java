@@ -57,7 +57,7 @@ public class NeuralCellTypes {
                 if(isFireTogetherWireTogether && simulation.activated(h,w)) {
                     byte strength = simulation.strength(alongHeight, alongWidth, direction);
 
-                    if(strength < Byte.MAX_VALUE) {
+                    if(strength + strengthIncrement <= Byte.MAX_VALUE) {
                         strength += strengthIncrement;
                     }
                     simulation.setStrength(alongHeight, alongWidth, direction, strength);

@@ -200,6 +200,33 @@ public class NeuronTest {
         assertFalse("Firing threshold not met.  This should not be active",
                 simulation.activated(1,2));
     }
+
+    @Test
+    public void testIncomingSignalStrengthSummationOfFiringCellsPushOverThresholdToFire() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,2, 2, true);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+
+        simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, (byte)5);
+        simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.RIGHT, (byte)5);
+
+        simulation.activate(1,1);
+        simulation.activate(1,3);
+
+        //  Set activation threshold
+        simulation.writeData(1,2, (byte)50, 1, 7);
+
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertTrue("Firing threshold met.  Cell should fire.",
+                simulation.activated(1,2));
+    }
     
     @Test
     public void testStrengthStepIncrementConfiguration() {

@@ -17,6 +17,7 @@ public class NeuralCellTypes {
          * adjacent active cells
          */
         public static final int FIRE_TOGETHER_WIRE_TOGETHER = 2;
+        public static final int FIRE_BELOW_THRESHOLD = 1;
     }
 
     private LocallyConnectedNeuralNetSimulation simulation;
@@ -34,6 +35,7 @@ public class NeuralCellTypes {
         boolean isFireTogetherWireTogether =    //  Fire together wire together logic (only if cur cell is on)
                 cellTypes.bitIsOn(alongHeight, alongWidth, NeuralGenes.FIRE_TOGETHER_WIRE_TOGETHER)
                         && simulation.activated(alongHeight, alongWidth);
+
 
         //  Now sum up all incoming firing connections
         double totalIncomingStrength = 0;
@@ -76,6 +78,17 @@ public class NeuralCellTypes {
     }
 
     private boolean checkAgainstActivationThreshold(int alongHeight, int alongWidth, double strength) {
+
+        boolean isFireBelowCertainThreshold = cellTypes.bitIsOn(alongHeight, alongWidth, NeuralGenes.FIRE_BELOW_THRESHOLD);
+        if(isFireBelowCertainThreshold) {
+            final double thresholdRange = 2.0;
+            double thresholdIncrement = thresholdRange / 32.0;  //  32 possible values (2 ^ 5)
+            double thresholdValue = (double)cellTypes.data(alongHeight, alongWidth, 3, 7);
+            thresholdValue *= thresholdIncrement;
+            thresholdValue -= 1.0;  //  (range from -1.0 to 1.0)
+            return strength < thresholdValue;
+        }
+
         byte rawThreshold = simulation.data(alongHeight, alongWidth, 1, 7);
         double thresholdDbl = (double) rawThreshold / (double)(Byte.MAX_VALUE);
         return strength >= thresholdDbl;

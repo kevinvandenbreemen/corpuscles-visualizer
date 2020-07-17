@@ -153,4 +153,24 @@ public class NeuronTest {
         assertEquals(2, simulation.strength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.RIGHT));
     }
 
+    @Test
+    public void testFireBelowThreshold() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,2, 1, true); //  Fire below a certain threshold
+        cellTypes.writeData(1,2, Byte.MAX_VALUE, 3, 7);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertTrue("Min threshold not met.  This cell should be firing", simulation.activated(1,2));
+
+
+    }
+
 }

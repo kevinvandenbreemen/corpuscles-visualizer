@@ -5,8 +5,7 @@ import com.vandenbreemen.corpuscles.visualizer.LocallyConnectedNeuralNet;
 import com.vandenbreemen.corpuscles.visualizer.LocallyConnectedNeuralNetSimulation;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 
 public class NeuronTest {
 
@@ -77,6 +76,32 @@ public class NeuronTest {
 
         assertTrue(simulation.activated(1,2));
 
+    }
+
+    @Test
+    public void testReadActivationThresholdFromCellData() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,2, 2, true);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network);
+
+        simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, (byte)120);
+        simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.RIGHT, Byte.MAX_VALUE);
+
+        simulation.activate(1,1);
+        simulation.activate(1,3);
+
+        //  Set activation threshold
+        simulation.writeData(1,2, Byte.MAX_VALUE, 1, 7);
+
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertFalse(simulation.activated(1,2));
     }
 
 }

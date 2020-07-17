@@ -63,8 +63,9 @@ public class NeuralCellTypes {
         }
 
         //  Determine if we should be firing
+        totalIncomingStrength /= (double)10;    //  Compress this down to a range from -5 to +5 so sigmoid function will give meaningful results
         double sigmoidValue = sigmoid(totalIncomingStrength);
-        if(checkAgainstActivationThreshold(sigmoidValue)) {
+        if(checkAgainstActivationThreshold(alongHeight, alongWidth, sigmoidValue)) {
             simulation.activate(alongHeight, alongWidth);
         } else {
             simulation.deactivate(alongHeight, alongWidth);
@@ -72,12 +73,15 @@ public class NeuralCellTypes {
 
     }
 
-    private boolean checkAgainstActivationThreshold(double strength) {
-        return strength > 0.7;
+    private boolean checkAgainstActivationThreshold(int alongHeight, int alongWidth, double strength) {
+        byte rawThreshold = simulation.data(alongHeight, alongWidth, 1, 7);
+        double thresholdDbl = (double) rawThreshold / (double)(Byte.MAX_VALUE);
+        return strength >= thresholdDbl;
     }
 
     private double sigmoid(double value) {
         //  Math function created with the help of https://www.desmos.com/calculator
+        //  2\cdot\left(\frac{1}{\left(1+e^{\left(\left(-x\right)\right)}\right)}-0.5\right)
         return 2 * ((1 / (1+ Math.exp(-value))) - 0.5);
     }
 }

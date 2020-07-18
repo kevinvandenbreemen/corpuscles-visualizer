@@ -346,6 +346,29 @@ public class NeuronTest {
     }
 
     @Test
+    public void testInhibitoryNeuronActivationAlongBoundaryDoesNotCrash() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,0, 0, true); //  Inhibitory Neuron
+
+        //  Fraction of cells required to get inhibitory cell to fire - 1/4 of all cells
+        cellTypes.writeData(1,0, (byte)0, 5,6);
+
+        //  radius of cells to check for firing - 4 cells out
+        cellTypes.writeData(1,0, (byte)3, 3, 4);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+
+        simulation.activate(1,1);
+        simulation.activate(1,3);
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,0);
+        simulation.nextEpoch();
+    }
+
+    @Test
     public void testInhibitoryNeuronMinActivationThresholdNotMet() {
         CorpusclesData cellTypes = new CorpusclesData(10,10);
         cellTypes.setBit(1,2, 0, true); //  Inhibitory Neuron

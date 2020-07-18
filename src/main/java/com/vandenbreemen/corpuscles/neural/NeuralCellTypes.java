@@ -114,8 +114,23 @@ public class NeuralCellTypes {
             rawCellFraction += 1;
             double minCellsActiveRatio = (double)rawCellFraction / 4;
 
-            for (int rh=alongHeight-radiusToSearch; rh<=(alongHeight+radiusToSearch); rh++) {
-                for (int rw=alongWidth-radiusToSearch; rw<=(alongWidth+radiusToSearch); rw++) {
+            int startingHeight = alongHeight - radiusToSearch;
+            int startingWidth = alongWidth - radiusToSearch;
+            if(startingHeight < 0) {
+                startingHeight = simulation.height() + startingHeight;
+            }
+
+            if(startingWidth < 0) {
+                startingWidth = simulation.width() - startingWidth;
+            }
+
+            int endingHeight = alongHeight + radiusToSearch;
+            int endingWidth = alongWidth + radiusToSearch;
+            endingHeight %= simulation.height();
+            endingWidth %= simulation.width();
+
+            for (int rh=startingHeight; rh<=endingHeight; rh++) {
+                for (int rw=startingWidth; rw<=endingWidth; rw++) {
 
                     if(rh == alongHeight && rw == alongWidth) continue;
 

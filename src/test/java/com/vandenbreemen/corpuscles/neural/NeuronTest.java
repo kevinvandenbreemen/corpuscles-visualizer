@@ -298,4 +298,57 @@ public class NeuronTest {
 
     }
 
+    @Test
+    public void testInhibitoryNeuronActivation() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,2, 0, true); //  Inhibitory Neuron
+
+        //  Fraction of cells required to get inhibitory cell to fire - 1/4 of all cells
+        cellTypes.writeData(1,2, (byte)0, 5,6);
+
+        //  radius of cells to check for firing - 1 cell out
+        cellTypes.writeData(1,2, (byte)0, 3, 4);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+
+        simulation.activate(1,1);
+        simulation.activate(1,3);
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertTrue("One quarter of cells in radius of 1 cell active.  Inhibitory cell should be active",
+                simulation.activated(1,2));
+    }
+
+    @Test
+    public void testInhibitoryNeuronMinActivationThresholdNotMet() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,2, 0, true); //  Inhibitory Neuron
+
+        //  Fraction of cells required to get inhibitory cell to fire - 1/2 of all cells
+        cellTypes.writeData(1,2, (byte)1, 5,6);
+
+        //  radius of cells to check for firing - 1 cell out
+        cellTypes.writeData(1,2, (byte)0, 3, 4);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+
+        simulation.activate(1,1);
+        simulation.activate(1,2);
+        simulation.activate(1,3);
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertFalse("One half of cells in radius of 1 cell must active.  Only 1 quarter were.  Cell should be off.",
+                simulation.activated(1,2));
+    }
+
 }

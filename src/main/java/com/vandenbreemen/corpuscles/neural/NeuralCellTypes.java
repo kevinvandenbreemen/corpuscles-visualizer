@@ -18,6 +18,7 @@ public class NeuralCellTypes {
          */
         public static final int FIRE_TOGETHER_WIRE_TOGETHER = 2;
         public static final int FIRE_BELOW_THRESHOLD = 1;
+        public static final int INHIBITOR = 0;
     }
 
     private LocallyConnectedNeuralNetSimulation simulation;
@@ -76,6 +77,41 @@ public class NeuralCellTypes {
         }
 
         //  Determine if we should be firing
+
+        if(cellTypes.bitIsOn(alongHeight, alongWidth, NeuralGenes.INHIBITOR)) {
+
+            int radiusToSearch = cellTypes.data(alongHeight, alongWidth, 3, 4);
+            radiusToSearch += 1;
+            int totalCells = 0;
+            int totalFiring = 0;
+
+            int rawCellFraction = cellTypes.data(alongHeight, alongWidth, 5, 6);
+            rawCellFraction += 1;
+            double minCellsActiveRatio = (double)rawCellFraction / 4;
+
+            for (int rh=alongHeight-radiusToSearch; rh<=(alongHeight+radiusToSearch); rh++) {
+                for (int rw=alongWidth-radiusToSearch; rw<=(alongWidth+radiusToSearch); rw++) {
+
+                    if(rh == alongHeight && rw == alongWidth) continue;
+
+                    totalCells++;
+
+                    if(simulation.activated(rh, rw)) {
+                        totalFiring ++;
+                    }
+                }
+            }
+
+            double fractionOfCellsActive = (double)totalFiring / (double)totalCells;
+            if(fractionOfCellsActive >= minCellsActiveRatio){
+                simulation.activate(alongHeight, alongWidth);
+            } else {
+                simulation.deactivate(alongHeight, alongWidth);
+            }
+
+            return;
+        }
+
         totalIncomingStrength /= 10;    //  Compress this down to a range from -5 to +5 so sigmoid function will give meaningful results
         double sigmoidValue = sigmoid(totalIncomingStrength);
         if(checkAgainstActivationThreshold(alongHeight, alongWidth, sigmoidValue)) {

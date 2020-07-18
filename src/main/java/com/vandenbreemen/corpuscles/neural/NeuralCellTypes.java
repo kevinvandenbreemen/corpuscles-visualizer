@@ -29,7 +29,32 @@ public class NeuralCellTypes {
         this.cellTypes = simulation.getCellTypes();
     }
 
+    private void doInhibitoryChecks(int alongHeight, int alongWidth) {
+
+        for(int height=0; height<simulation.height(); height++) {
+            for(int width=0; width<simulation.width(); width++) {
+                if(height == alongHeight && width == alongWidth) continue;
+
+                if(cellTypes.bitIsOn(height, width, NeuralGenes.INHIBITOR) &&
+                        simulation.activated(height, width)) {
+
+                    int distance = simulation.distanceBetween(alongHeight, alongWidth, height, width);
+                    byte thresholdForActivation = simulation.data(alongHeight, alongWidth, 1, 7);
+
+                    if(cellTypes.bitIsOn(height, width, 7)) {   //  Increment threshold by 1
+                        double thresoldIncrement = 10.0 / (double)distance;
+                        byte finalThreshold = (byte) ((byte)thresholdForActivation + (byte)Math.ceil(thresoldIncrement));
+                        simulation.writeData(alongHeight, alongWidth, finalThreshold, 1, 7);
+                    }
+
+                }
+            }
+        }
+    }
+
     void performAction(int alongHeight, int alongWidth) {
+
+        doInhibitoryChecks(alongHeight, alongWidth);
 
         int[] neighbourhood = simulation.getMooreNeighbourhoodRange(alongHeight, alongWidth);
 

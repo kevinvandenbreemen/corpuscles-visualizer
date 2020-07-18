@@ -110,13 +110,17 @@ public class NeuronTest {
 
         LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
         LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
-        simulation.activate(1,2);
         simulation.setStrength(1,2, LocallyConnectedNeuralNet.ConnectionDirection.LEFT, (byte)100);
         simulation.nextEpoch();
 
         Neuron neuron = new Neuron(simulation);
 
         for(int i=0; i<1000; i++) {
+
+            //  Artificially simulate cell active so we can test strength decrease
+            simulation.activate(1,2);
+            simulation.nextEpoch();
+
             neuron.takeTurn(1, 2);
             simulation.nextEpoch();
         }
@@ -199,6 +203,23 @@ public class NeuronTest {
         simulation.nextEpoch();
 
         assertFalse(simulation.activated(1,2));
+    }
+
+    @Test
+    public void testCellDoesNotActivateIfNoThresholdOrActivation() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,2, 2, true);
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,2);
+        simulation.nextEpoch();
+
+        assertFalse("No incoming activations.  Cell should not be firing", simulation.activated(1,2));
     }
 
     @Test

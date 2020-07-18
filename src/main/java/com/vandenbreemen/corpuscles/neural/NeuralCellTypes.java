@@ -134,6 +134,10 @@ public class NeuralCellTypes {
             return strength < thresholdValue;
         }
 
+        if(strength == 0.0) {
+            return false;
+        }
+
         byte rawThreshold = simulation.data(alongHeight, alongWidth, 1, 7);
         double thresholdDbl = (double) rawThreshold / (double)(Byte.MAX_VALUE);
         return strength >= thresholdDbl;

@@ -392,4 +392,24 @@ public class NeuronTest {
         assertEquals(11, simulation.data(1,2, 1, 7));
     }
 
+    @Test
+    public void signalFromInhibitoryNeuronsDilutesFurtherOut() {
+        CorpusclesData cellTypes = new CorpusclesData(10,10);
+        cellTypes.setBit(1,3, 0, true); //  Inhibitory Neuron
+        cellTypes.setBit(1,3, 7, true); //  Increase activation threshold by 10
+
+        LocallyConnectedNeuralNet network = new LocallyConnectedNeuralNet(10,10);
+        LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(network, cellTypes);
+        simulation.writeData(1,0,(byte)1, 1, 7);  //  Activation threshold
+        simulation.activate(1,3);   //  Inhibitory neuron is running
+
+        simulation.nextEpoch();
+
+        Neuron neuron = new Neuron(simulation);
+        neuron.takeTurn(1,0);
+        simulation.nextEpoch();
+
+        assertEquals(5, simulation.data(1,0, 1, 7));
+    }
+
 }

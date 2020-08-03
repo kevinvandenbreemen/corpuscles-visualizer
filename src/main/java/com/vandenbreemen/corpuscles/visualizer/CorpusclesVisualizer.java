@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CorpusclesVisualizer extends JFrame  {
 
@@ -28,10 +29,17 @@ public class CorpusclesVisualizer extends JFrame  {
      */
     private CellularAutomaton automaton;
     private GridCanvas canvas;
+    private JButton stopButton;
+
+    /**
+     * Thread that is currently iterating
+     */
+    private AtomicReference<Thread> iterationThread;
 
     public CorpusclesVisualizer(Simulation simulation, CellularAutomaton automaton, CellRenderer renderer) {
         super("CORPUSCLES VISUALIZER");
         this.automaton = automaton;
+        this.iterationThread = new AtomicReference<>();
 
         setBounds(20,20, 800,700);
 
@@ -62,6 +70,9 @@ public class CorpusclesVisualizer extends JFrame  {
      * @param simulation
      */
     public void setSimulation(Simulation simulation) {
+
+        this.stopButton.doClick();
+
         this.canvas.setSimulation(simulation);
         redraw();
     }
@@ -72,8 +83,8 @@ public class CorpusclesVisualizer extends JFrame  {
 
         AtomicBoolean runForever = new AtomicBoolean(false);
 
-        JButton button = new JButton("NEXT ITERATION");
-        button.addActionListener(new ActionListener() {
+        JButton nextIterationButton = new JButton("NEXT ITERATION");
+        nextIterationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 performAutomataStuff();
@@ -84,7 +95,15 @@ public class CorpusclesVisualizer extends JFrame  {
         next10.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread() {
+
+                nextIterationButton.setEnabled(false);
+
+                if(iterationThread.get() != null) {
+                    iterationThread.get().interrupt();
+                    iterationThread.set(null);
+                }
+
+                Thread newThread = new Thread() {
                     @Override
                     public void run() {
                         if(Thread.currentThread().equals(this)) {
@@ -94,13 +113,16 @@ public class CorpusclesVisualizer extends JFrame  {
                                     performAutomataStuff();
                                     sleep(DELAY);
                                 }
+                                nextIterationButton.setEnabled(true);
                             }
                             catch(Exception ex) {
                                 ex.printStackTrace();
                             }
                         }
                     }
-                }.start();
+                };
+                iterationThread.set(newThread);
+                newThread.start();
 
             }
         });
@@ -108,25 +130,45 @@ public class CorpusclesVisualizer extends JFrame  {
         JButton runForeverBtn = new JButton("Run Forever");
 
 
-        JButton stop = new JButton("Stop");
-        stop.addActionListener(new ActionListener() {
+        stopButton = new JButton("Stop");
+        stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                Thread current = iterationThread.get();
+                if(current != null) {
+                    current.interrupt();
+                    iterationThread.set(null);
+                }
+
+                nextIterationButton.setEnabled(true);
+                runForeverBtn.setEnabled(true);
+                next10.setEnabled(true);
                 runForever.set(false);
-                stop.setEnabled(false);
+                stopButton.setEnabled(false);
             }
         });
-        stop.setEnabled(false);
+        stopButton.setEnabled(false);
 
         runForeverBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                new Thread() {
+                nextIterationButton.setEnabled(false);
+                next10.setEnabled(false);
+                runForeverBtn.setEnabled(false);
+
+                Thread temp = iterationThread.get();
+                if(temp != null) {
+                    temp.interrupt();
+                    iterationThread.set(null);
+                }
+
+                Thread newThread = new Thread() {
                     @Override
                     public void run() {
                         if(Thread.currentThread().equals(this)) {
-                            stop.setEnabled(true);
+                            stopButton.setEnabled(true);
                             runForever.set(true);
                             try {
                                 while(runForever.get()) {
@@ -139,16 +181,17 @@ public class CorpusclesVisualizer extends JFrame  {
                             }
                         }
                     }
-                }.start();
-
+                };
+                iterationThread.set(newThread);
+                newThread.start();
 
             }
         });
 
-        buttons.add(button);
+        buttons.add(nextIterationButton);
         buttons.add(next10);
         buttons.add(runForeverBtn);
-        buttons.add(stop);
+        buttons.add(stopButton);
 
         getContentPane().add("North", buttons);
     }

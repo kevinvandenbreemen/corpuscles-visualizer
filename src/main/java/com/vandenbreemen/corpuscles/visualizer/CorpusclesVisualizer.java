@@ -23,8 +23,6 @@ public class CorpusclesVisualizer extends JFrame  {
 
     private static final long DELAY = 100;
 
-    private Simulation simulation;
-
     /**
      * The object responsible for doing the actual data processing
      */
@@ -33,7 +31,6 @@ public class CorpusclesVisualizer extends JFrame  {
 
     public CorpusclesVisualizer(Simulation simulation, CellularAutomaton automaton, CellRenderer renderer) {
         super("CORPUSCLES VISUALIZER");
-        this.simulation = simulation;
         this.automaton = automaton;
 
         setBounds(20,20, 800,700);
@@ -58,6 +55,15 @@ public class CorpusclesVisualizer extends JFrame  {
      */
     public void setCellClickListener(CellClickListener listener) {
         canvas.setCellClickListener(listener);
+    }
+
+    /**
+     * Update to the given simulation
+     * @param simulation
+     */
+    public void setSimulation(Simulation simulation) {
+        this.canvas.setSimulation(simulation);
+        redraw();
     }
 
     private void drawButtons() {

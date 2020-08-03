@@ -143,6 +143,10 @@ public class GridCanvas extends JPanel implements MouseListener {
 
     }
 
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
 

@@ -1,8 +1,10 @@
 package com.vandenbreemen.corpuscles.visualizer;
 
+import com.vandenbreemen.corpuscles.neural.LocallyConnectedNeuralNet;
+import com.vandenbreemen.corpuscles.neural.LocallyConnectedNeuralNetSimulation;
 import org.junit.Test;
 
-import static com.vandenbreemen.corpuscles.visualizer.LocallyConnectedNeuralNet.ConnectionDirection.*;
+import static com.vandenbreemen.corpuscles.neural.LocallyConnectedNeuralNet.ConnectionDirection.*;
 import static org.junit.Assert.assertEquals;
 
 public class LocallyConnectedNeuralNetSimulationTest {

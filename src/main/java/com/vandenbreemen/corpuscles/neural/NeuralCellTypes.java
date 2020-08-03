@@ -1,8 +1,6 @@
 package com.vandenbreemen.corpuscles.neural;
 
 import com.vandenbreemen.corpuscles.CorpusclesData;
-import com.vandenbreemen.corpuscles.visualizer.LocallyConnectedNeuralNet;
-import com.vandenbreemen.corpuscles.visualizer.LocallyConnectedNeuralNetSimulation;
 
 import static com.vandenbreemen.corpuscles.Simulation.NeighbourHoodRange.*;
 

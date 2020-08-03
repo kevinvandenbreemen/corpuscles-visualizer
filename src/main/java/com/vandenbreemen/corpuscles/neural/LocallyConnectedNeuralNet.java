@@ -1,4 +1,4 @@
-package com.vandenbreemen.corpuscles.visualizer;
+package com.vandenbreemen.corpuscles.neural;
 
 import com.vandenbreemen.corpuscles.CorpusclesData;
 

@@ -2,7 +2,6 @@ package com.vandenbreemen.corpuscles.neural;
 
 import com.vandenbreemen.corpuscles.Corpuscle;
 import com.vandenbreemen.corpuscles.Simulation;
-import com.vandenbreemen.corpuscles.visualizer.LocallyConnectedNeuralNetSimulation;
 
 public class Neuron extends Corpuscle {
 

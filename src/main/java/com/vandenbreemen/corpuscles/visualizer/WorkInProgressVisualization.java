@@ -5,6 +5,8 @@ import com.vandenbreemen.corpuscles.Corpuscle;
 import com.vandenbreemen.corpuscles.CorpusclesData;
 import com.vandenbreemen.corpuscles.Simulation;
 import com.vandenbreemen.corpuscles.celltypes.CellTypesBuilder;
+import com.vandenbreemen.corpuscles.neural.LocallyConnectedNeuralNet;
+import com.vandenbreemen.corpuscles.neural.LocallyConnectedNeuralNetSimulation;
 import com.vandenbreemen.corpuscles.neural.Neuron;
 
 /**

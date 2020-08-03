@@ -4,7 +4,7 @@ import com.vandenbreemen.corpuscles.CorpusclesData;
 
 /**
  * Network of cells that are connected on all sides.  This is like a neural network, except all connections are
- * width adjacent cells.
+ * with adjacent cells.
  */
 public class LocallyConnectedNeuralNet extends CorpusclesData {
 

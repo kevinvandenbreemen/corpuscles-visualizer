@@ -23,12 +23,21 @@ public class WorkInProgressVisualization {
         LocallyConnectedNeuralNetSimulation simulation = new LocallyConnectedNeuralNetSimulation(net, cellTypes);
 
         final Neuron neuron = new Neuron(simulation);
-        new CorpusclesVisualizer(simulation, new CellularAutomaton(simulation) {
+        CorpusclesVisualizer visualizer = new CorpusclesVisualizer(simulation, new CellularAutomaton(simulation) {
             @Override
             protected Corpuscle getCorpuscle(int alongWidth, int alongHeight, Simulation simulation) {
                 return neuron;
             }
         }, new CellRenderer());
+        visualizer.setCellClickListener((alongHeight, alongWidth) -> {
+            if(simulation.activated(alongHeight, alongWidth)) {
+                simulation.deactivate(alongHeight, alongWidth);
+                return;
+            }
+            simulation.activate(alongHeight, alongWidth);
+            simulation.nextEpoch();
+            visualizer.redraw();
+        });
 
     }
 
